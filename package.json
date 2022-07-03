@@ -11,10 +11,11 @@
     "build": "expo build:web",
     "type-check": "tsc --noemit",
     "lint": "eslint --max-warnings=0 ./src --fix",
-    "pretty": "prettier --write \"./src/**/*.{ts,tsx}\""
+    "pretty": "prettier --write \"./src/**/*.{ts,tsx}\"",
+    "prepare": "husky install"
   },
   "lint-staged": {
-    "./src/*.{ts,tsx}": [
+    "./src/**/*.{ts,tsx}": [
       "npm run lint",
       "npm run pretty"
     ]
