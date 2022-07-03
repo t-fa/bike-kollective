@@ -44,6 +44,7 @@
     "expo-cli": "^5.4.12",
     "husky": "^8.0.1",
     "jest": "^28.1.2",
+    "lint-staged": "^13.0.3",
     "prettier": "2.7.1",
     "typescript": "~4.3.5"
   },
