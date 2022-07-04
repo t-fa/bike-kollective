@@ -7,6 +7,7 @@ import {
   View
 } from 'react-native';
 import styles from '../styles/StyleSheet';
+import Account from '../../../firebase/account';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -38,7 +39,9 @@ const LoginScreen = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          //onPress={() => { }}
+          onPress={() => {
+            Account.emailPassWordSignUp(email, password);
+          }}
           style={[styles.button, styles.buttonOutline]}
         >
           <Text style={styles.buttonOutlineText}>Register</Text>
