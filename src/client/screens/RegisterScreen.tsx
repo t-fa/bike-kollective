@@ -7,22 +7,23 @@ import {
   View
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../App';
+import { auth } from '../../server';
 import styles from '../styles/StyleSheet';
 import Account from '../../../firebase/account';
-import { auth } from '../../server';
-import { RootStackParamList } from '../../../App';
 
-type LoginScreenProps = NativeStackScreenProps<
+type RegisterScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  'LoginScreen'
+  'RegisterScreen'
 >;
 
-const LoginScreen: React.FC<LoginScreenProps> = (props) => {
+const RegisterScreen: React.FC<RegisterScreenProps> = (props) => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  // TODO: should be somewhere else?
-  // if user is already logged in, go to HomeScreen
+  // attach listener to navigate when user logs in, for now
   useEffect(() => {
     return auth.onAuthStateChanged((user) => {
       if (user) {
@@ -34,6 +35,12 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="Name"
+          value={name}
+          onChangeText={(text) => setName(text)}
+          style={styles.input}
+        />
         <TextInput
           placeholder="Email"
           value={email}
@@ -47,49 +54,31 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
           style={styles.input}
           secureTextEntry
         />
+        <TextInput
+          placeholder="Confirm password"
+          value={confirmPassword}
+          onChangeText={(text) => setConfirmPassword(text)}
+          style={styles.input}
+          secureTextEntry
+        />
       </View>
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => {
-            Account.emailPasswordSignIn(email, password);
+            Account.emailPasswordCreateUser(email, password);
           }}
           style={styles.button}
         >
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => {
-            props.navigation.replace('WaiverScreen');
-          }}
-          style={[styles.button, styles.buttonOutline]}
-        >
-          <Text style={styles.buttonOutlineText}>Register</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          /*onPress={() => {
-              Account.googleSignIn(email, password);
-            }}*/
-          style={[styles.button, styles.buttonOutline]}
-        >
-          <Text style={styles.buttonOutlineText}>Google</Text>
-        </TouchableOpacity>
-
         <View style={styles.row}>
-          <Text>{"Don't have an account? "}</Text>
+          <Text>{'Already have an account? '}</Text>
           <TouchableOpacity
-            onPress={() => props.navigation.replace('WaiverScreen')}
+            onPress={() => props.navigation.replace('LoginScreen')}
           >
-            <Text style={styles.link}>Sign up</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.row}>
-          <Text>Sign in using another account? </Text>
-          <TouchableOpacity onPress={() => Account.signOut()}>
-            <Text style={styles.link}>Log out</Text>
+            <Text style={styles.link}>Sign in</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -97,4 +86,4 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
   );
 };
 
-export default LoginScreen;
+export default RegisterScreen;

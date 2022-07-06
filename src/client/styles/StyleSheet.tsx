@@ -45,6 +45,14 @@ const styles = StyleSheet.create({
     color: 'blue',
     fontWeight: '700',
     fontSize: 16
+  },
+  row: {
+    flexDirection: 'row',
+    marginTop: 4
+  },
+  link: {
+    fontWeight: 'bold',
+    color: 'darkblue'
   }
 });
 
