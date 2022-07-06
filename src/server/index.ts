@@ -1,10 +1,5 @@
-import { initializeApp } from 'firebase/app';
-
 import { getFirestore } from 'firebase/firestore/lite';
 
-const firebaseConfig = {
-  apiKey: process.env.FIREBASE,
-=======
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
 import {
@@ -13,7 +8,6 @@ import {
   signInWithEmailAndPassword,
   signOut
 } from 'firebase/auth';
-// import { getAnalytics } from "firebase/analytics";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -25,8 +19,6 @@ const firebaseConfig = {
   // will look into later, or maybe someone else can?
   // Will use the key for now, since I did that in the first place anyway
   apiKey: 'AIzaSyDRvToZeMmzwEj_6_ugenBxPvgtjVUZGVs',
-
-
   authDomain: 'the-bike-kollective-a8f89.firebaseapp.com',
   projectId: 'the-bike-kollective-a8f89',
   storageBucket: 'the-bike-kollective-a8f89.appspot.com',
@@ -35,15 +27,12 @@ const firebaseConfig = {
   measurementId: 'G-TCPV9WSHNH'
 };
 
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 console.log(db);
 
 // basic DB config - feel free to modify
-=======
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 // const analytics = getAnalytics(app);
 
