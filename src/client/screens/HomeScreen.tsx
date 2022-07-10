@@ -11,7 +11,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     <View>
       <Text>The home screen</Text>
       <Button
-        title="Added Bike"
+        title="Add a Bike"
         onPress={() => navigation.navigate('AddBikeScreen')}
       ></Button>
     </View>

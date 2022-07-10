@@ -1,11 +1,16 @@
 import * as React from 'react';
-import { StyleSheet, Button, TextInput, View, Text } from 'react-native';
+import {
+  StyleSheet,
+  TextInput,
+  View,
+  Text,
+  TouchableOpacity
+} from 'react-native';
 import { Formik, FormikProps, FormikValues } from 'formik';
 import * as Yup from 'yup';
-import CameraButton from './CameraButton';
 import { auth } from '../../../server';
 
-const AddBikeForm: React.FC = () => {
+const AddBikeForm: React.FC = ({ savedPhoto }) => {
   // Validation
   const validate = Yup.object({
     model: Yup.string()
@@ -24,11 +29,12 @@ const AddBikeForm: React.FC = () => {
     issues: '',
     location: '',
     lockCombination: '',
-    user: auth.currentUser?.email
+    user: auth.currentUser?.email,
+    photo: savedPhoto
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <Formik
         // Set initial values
         initialValues={bikeValues}
@@ -36,13 +42,17 @@ const AddBikeForm: React.FC = () => {
         validationSchema={validate}
         // On submit, post data to server
         onSubmit={(values) => {
-          fetch('http://localhost:8080/addBike', {
-            method: 'post',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(values)
-          });
+          // Set photo
+          values.photo = savedPhoto.uri;
+          console.log(values.photo);
+          // console.log(values)
+          // fetch('http://localhost:8080/addBike', {
+          //   method: 'post',
+          //   headers: {
+          //     'Content-Type': 'application/json'
+          //   },
+          //   body: JSON.stringify(values)
+          // });
         }}
       >
         {/* build form */}
@@ -110,13 +120,14 @@ const AddBikeForm: React.FC = () => {
               {props.touched.lockCombination && props.errors.lockCombination}
             </Text>
 
-            <CameraButton></CameraButton>
+            {/* <CameraButton></CameraButton> */}
 
-            <Button
-              title="Add Bike"
-              color="#065C00"
+            <TouchableOpacity
+              style={styles.addBike}
               onPress={() => props.handleSubmit()}
-            ></Button>
+            >
+              <Text style={styles.ButtonText}>Add Bike</Text>
+            </TouchableOpacity>
           </View>
         )}
       </Formik>
@@ -125,6 +136,10 @@ const AddBikeForm: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    // position: 'relative',
+    // flex: 1
+  },
   input: {
     borderWidth: 1,
     borderColor: '#ddd',
@@ -138,6 +153,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 5,
     marginBottom: 5
+  },
+  addBike: {
+    marginTop: 10,
+    width: 130,
+    borderRadius: 4,
+    backgroundColor: '#065C00',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    marginLeft: 44
+  },
+  ButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center'
   }
 });
 
