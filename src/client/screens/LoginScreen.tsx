@@ -9,7 +9,7 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import styles from '../styles/StyleSheet';
 import Account from '../../../firebase/account';
-import { auth } from '../../server';
+import { auth } from '../../../server';
 import { RootStackParamList } from '../../../App';
 
 type LoginScreenProps = NativeStackScreenProps<

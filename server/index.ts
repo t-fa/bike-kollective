@@ -1,5 +1,5 @@
-import express, {Request, Response} from "express";
-import bodyParser from "body-parser";
+//import express, {Request, Response} from "express";
+//import bodyParser from "body-parser";
 import { getFirestore } from 'firebase/firestore/lite';
 
 // Import the functions you need from the SDKs you need
@@ -29,7 +29,7 @@ const firebaseConfig = {
   measurementId: 'G-TCPV9WSHNH'
 };
 
-const app = express();
+/*const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -41,7 +41,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}...`);
-});
+});*/
 
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
