@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import styles from '../styles/StyleSheet';
-import Account from '../../../firebase/account';
+import { emailPasswordSignIn, userSignOut } from '../../../firebase/account';
 import { auth } from '../../../server';
 import { RootStackParamList } from '../../../App';
 
@@ -18,8 +18,8 @@ type LoginScreenProps = NativeStackScreenProps<
 >;
 
 const LoginScreen: React.FC<LoginScreenProps> = (props) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
 
   // TODO: should be somewhere else?
   // if user is already logged in, go to HomeScreen
@@ -52,7 +52,7 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => {
-            Account.emailPasswordSignIn(email, password);
+            emailPasswordSignIn(email, password);
           }}
           style={styles.button}
         >
@@ -70,7 +70,7 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
 
         <TouchableOpacity
           /*onPress={() => {
-              Account.googleSignIn(email, password);
+              googleSignIn(email, password);
             }}*/
           style={[styles.button, styles.buttonOutline]}
         >
@@ -88,7 +88,7 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
 
         <View style={styles.row}>
           <Text>Sign in using another account? </Text>
-          <TouchableOpacity onPress={() => Account.signOut()}>
+          <TouchableOpacity onPress={() => userSignOut()}>
             <Text style={styles.link}>Log out</Text>
           </TouchableOpacity>
         </View>

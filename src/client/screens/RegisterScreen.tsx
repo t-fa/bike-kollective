@@ -10,7 +10,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../App';
 import { auth } from '../../../server';
 import styles from '../styles/StyleSheet';
-import Account from '../../../firebase/account';
+import { emailPasswordCreateUser } from '../../../firebase/account';
 
 type RegisterScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -18,10 +18,10 @@ type RegisterScreenProps = NativeStackScreenProps<
 >;
 
 const RegisterScreen: React.FC<RegisterScreenProps> = (props) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
 
   // attach listener to navigate when user logs in, for now
   useEffect(() => {
@@ -66,7 +66,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = (props) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => {
-            Account.emailPasswordCreateUser(email, password);
+            emailPasswordCreateUser(email, password);
           }}
           style={styles.button}
         >
