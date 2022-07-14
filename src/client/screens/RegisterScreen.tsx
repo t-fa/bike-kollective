@@ -10,7 +10,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../App';
 import { auth } from '../../../server';
 import styles from '../styles/StyleSheet';
-import { emailPasswordCreateUser } from '../../../firebase/authentication';
+import { emailPasswordCreateUser } from '../firebase/authentication';
 
 type RegisterScreenProps = NativeStackScreenProps<
   RootStackParamList,

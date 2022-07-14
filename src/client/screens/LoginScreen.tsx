@@ -9,14 +9,12 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import styles from '../styles/StyleSheet';
 import {
-  createUserDocument,
+  authStateChanged,
   emailPasswordSignIn,
   googleSignIn,
   userSignOut
-} from '../../../firebase/authentication';
-import { auth } from '../../../server';
+} from '../firebase/authentication';
 import { RootStackParamList } from '../../../App';
-// import {getRedirectResult} from "firebase/auth";
 
 type LoginScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -27,17 +25,9 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  // TODO: should be somewhere else?
-  // if user is already logged in, go to HomeScreen
+  //
   useEffect(() => {
-    return auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        alert('After auth state changed');
-        await createUserDocument(user?.email);
-        //props.navigation.navigate('HomeScreen');
-        //alert("After clicking sign in");
-      }
-    });
+    return authStateChanged(props);
   }, []);
 
   return (

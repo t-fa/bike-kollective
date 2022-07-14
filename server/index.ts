@@ -1,5 +1,6 @@
-//import express, {Request, Response} from "express";
-//import bodyParser from "body-parser";
+// import express, {Request, Response} from "express";
+// import bodyParser from "body-parser";
+
 import { initializeApp } from 'firebase/app';
 import {
   GoogleAuthProvider,
@@ -8,7 +9,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
 } from 'firebase/auth';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes } from "firebase/storage";
@@ -59,6 +60,7 @@ export {
   signOut,
   signInWithRedirect,
   getRedirectResult,
+  getFirestore,
   collection,
   addDoc,
   ref,
