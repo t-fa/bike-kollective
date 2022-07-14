@@ -8,7 +8,15 @@ import {
 } from 'react-native';
 import { Formik, FormikProps, FormikValues } from 'formik';
 import * as Yup from 'yup';
-import { auth } from '../../../server';
+import {
+  auth,
+  db,
+  ref,
+  storage,
+  uploadBytes,
+  addDoc,
+  collection
+} from '../../../server';
 
 const AddBikeForm: React.FC = ({ savedPhoto }) => {
   // Validation
@@ -29,7 +37,7 @@ const AddBikeForm: React.FC = ({ savedPhoto }) => {
     issues: '',
     location: '',
     lockCombination: '',
-    user: auth.currentUser?.email,
+    user: auth.currentUser?.uid,
     photo: savedPhoto
   };
 
@@ -41,18 +49,29 @@ const AddBikeForm: React.FC = ({ savedPhoto }) => {
         // validation
         validationSchema={validate}
         // On submit, post data to server
-        onSubmit={(values) => {
+        onSubmit={async (values, { resetForm }) => {
+          // Create a reference for phoho
+          const pictureLocation = `images/${Math.random().toString(36)}`;
+
           // Set photo
-          values.photo = savedPhoto.uri;
-          console.log(values.photo);
-          // console.log(values)
-          // fetch('http://localhost:8080/addBike', {
-          //   method: 'post',
-          //   headers: {
-          //     'Content-Type': 'application/json'
-          //   },
-          //   body: JSON.stringify(values)
-          // });
+          values.photo = pictureLocation;
+
+          const pictureReference = ref(storage, pictureLocation);
+
+          // Get image and convert to bytes
+          const img = await fetch(savedPhoto.uri);
+          const bytes = await img.blob();
+
+          // Saved Image
+          uploadBytes(pictureReference, bytes).then(() => {
+            console.log('picture saved');
+          });
+
+          // Add bike data to firestore
+          const docRef = await addDoc(collection(db, 'bikes'), values);
+          console.log(docRef.id, 'saved');
+          alert('Bike Added');
+          resetForm(); // reset form
         }}
       >
         {/* build form */}
