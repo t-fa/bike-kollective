@@ -1,8 +1,5 @@
 //import express, {Request, Response} from "express";
 //import bodyParser from "body-parser";
-import { getFirestore } from 'firebase/firestore/lite';
-
-// Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
 import {
   getAuth,
@@ -10,16 +7,11 @@ import {
   signInWithEmailAndPassword,
   signOut
 } from 'firebase/auth';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  // apparently it's quite a pain to get the .env working with React Native
-  // will look into later, or maybe someone else can?
-  // Will use the key for now, since I did that in the first place anyway
   apiKey: 'AIzaSyDRvToZeMmzwEj_6_ugenBxPvgtjVUZGVs',
   authDomain: 'the-bike-kollective-a8f89.firebaseapp.com',
   projectId: 'the-bike-kollective-a8f89',
@@ -45,15 +37,18 @@ app.listen(PORT, () => {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
-
-// Initialize Firebase
 const auth = getAuth(firebaseApp);
-// const analytics = getAnalytics(app);
+const storage = getStorage(firebaseApp);
 
 export {
   firebaseApp,
   auth,
   db,
+  storage,
+  ref,
+  uploadBytes,
+  collection,
+  addDoc,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut

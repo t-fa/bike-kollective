@@ -8,7 +8,10 @@ import {
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import styles from '../styles/StyleSheet';
-import { emailPasswordSignIn, userSignOut } from '../../../firebase/account';
+import {
+  emailPasswordSignIn,
+  userSignOut
+} from '../../../firebase/authentication';
 import { auth } from '../../../server';
 import { RootStackParamList } from '../../../App';
 
