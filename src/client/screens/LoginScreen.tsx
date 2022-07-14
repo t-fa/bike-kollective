@@ -9,11 +9,14 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import styles from '../styles/StyleSheet';
 import {
+  createUserDocument,
   emailPasswordSignIn,
+  googleSignIn,
   userSignOut
 } from '../../../firebase/authentication';
 import { auth } from '../../../server';
 import { RootStackParamList } from '../../../App';
+// import {getRedirectResult} from "firebase/auth";
 
 type LoginScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -27,9 +30,12 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
   // TODO: should be somewhere else?
   // if user is already logged in, go to HomeScreen
   useEffect(() => {
-    return auth.onAuthStateChanged((user) => {
+    return auth.onAuthStateChanged(async (user) => {
       if (user) {
-        props.navigation.navigate('HomeScreen');
+        alert('After auth state changed');
+        await createUserDocument(user?.email);
+        //props.navigation.navigate('HomeScreen');
+        //alert("After clicking sign in");
       }
     });
   }, []);
@@ -72,9 +78,9 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          /*onPress={() => {
-              googleSignIn(email, password);
-            }}*/
+          onPress={() => {
+            googleSignIn();
+          }}
           style={[styles.button, styles.buttonOutline]}
         >
           <Text style={styles.buttonOutlineText}>Google</Text>

@@ -2,6 +2,9 @@
 //import bodyParser from "body-parser";
 import { initializeApp } from 'firebase/app';
 import {
+  GoogleAuthProvider,
+  signInWithRedirect,
+  getRedirectResult,
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -36,20 +39,28 @@ app.listen(PORT, () => {
 });*/
 
 const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore(firebaseApp);
 const auth = getAuth(firebaseApp);
+const provider = new GoogleAuthProvider();
+const db = getFirestore(firebaseApp);
 const storage = getStorage(firebaseApp);
+
+// need to export GoogleAuthProvider  to use its static methods,
+// since you can't use static methods from an instance of a class, like provider (for some reason)
 
 export {
   firebaseApp,
   auth,
+  provider,
+  GoogleAuthProvider,
   db,
   storage,
-  ref,
-  uploadBytes,
-  collection,
-  addDoc,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
+  signInWithRedirect,
+  getRedirectResult,
+  collection,
+  addDoc,
+  ref,
+  uploadBytes
 };
