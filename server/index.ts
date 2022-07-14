@@ -1,6 +1,6 @@
-import express, {Request, Response} from "express";
-import bodyParser from "body-parser";
-import { getFirestore } from 'firebase/firestore/lite';
+// import express, {Request, Response} from "express";
+// import bodyParser from "body-parser";
+// import { getFirestore } from 'firebase/firestore';
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
@@ -8,8 +8,13 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
 } from 'firebase/auth';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes} from 'firebase/storage';
+// import 'firebase/storage';
+
+// import {uploadBytes, ref, getStorage} from 'firebase/storage'
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -29,31 +34,40 @@ const firebaseConfig = {
   measurementId: 'G-TCPV9WSHNH'
 };
 
-const app = express();
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+// const app = express();
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
 
-const PORT = process.env.PORT || 8080;
+// const PORT = process.env.PORT || 8080;
 
-app.get('/', (req: Request, res: Response) => {
-    res.send('hello');
-})
+// app.get('/', (req: Request, res: Response) => {
+//     res.send('hello');
+// })
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}...`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Server listening on port ${PORT}...`);
+// });
 
 const firebaseApp = initializeApp(firebaseConfig);
+
 const db = getFirestore(firebaseApp);
 
 // Initialize Firebase
 const auth = getAuth(firebaseApp);
-// const analytics = getAnalytics(app);
+const storage = getStorage(firebaseApp);
 
+
+// const analytics = getAnalytics(app);
 export {
   firebaseApp,
   auth,
   db,
+  storage,
+  collection,
+  addDoc,
+  getFirestore,
+  ref,
+  uploadBytes, 
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut

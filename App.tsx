@@ -7,6 +7,7 @@ import LoginScreen from "./src/client/screens/LoginScreen";
 import RegisterScreen from "./src/client/screens/RegisterScreen";
 import WaiverScreen from "./src/client/screens/WaiverScreen";
 import HomeScreen from "./src/client/screens/HomeScreen";
+import AddBikeScreen from './src/client/screens/addBike';
 
 export type RootStackParamList = {
     LoginScreen: undefined;
@@ -25,6 +26,7 @@ export default function App() {
         <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{ title: 'Register' }}  />
         <Stack.Screen name="WaiverScreen" component={WaiverScreen} options={{ title: 'Sign Accident Waiver' }} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'The Bike Kollective' }} />
+        <Stack.Screen name="AddBikeScreen" component={AddBikeScreen} options={{ title: 'Add Bike To System' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

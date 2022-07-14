@@ -1,6 +1,6 @@
 import {
     auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut
-} from "../src/server";
+} from "../server";
 
 /**
  * TODO: Google Sign-in/up
