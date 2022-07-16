@@ -23,7 +23,9 @@ const RegisterScreen: React.FC<RegisterScreenProps> = (props) => {
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
 
-  // attach listener to navigate when user logs in, for now
+  // Attach listener to navigate when user logs in, for now.
+  // If user uses Google Sign in, they'll get to the screen
+  // and then immediately go to the HomeScreen.
   useEffect(() => {
     return auth.onAuthStateChanged((user) => {
       if (user) {

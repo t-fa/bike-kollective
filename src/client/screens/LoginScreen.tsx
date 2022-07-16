@@ -60,7 +60,7 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
 
         <TouchableOpacity
           onPress={() => {
-            props.navigation.replace('WaiverScreen');
+            props.navigation.navigate('WaiverScreen');
           }}
           style={[styles.button, styles.buttonOutline]}
         >
@@ -79,7 +79,7 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
         <View style={styles.row}>
           <Text>{"Don't have an account? "}</Text>
           <TouchableOpacity
-            onPress={() => props.navigation.replace('WaiverScreen')}
+            onPress={() => props.navigation.navigate('WaiverScreen')}
           >
             <Text style={styles.link}>Sign up</Text>
           </TouchableOpacity>

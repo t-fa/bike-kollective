@@ -4,6 +4,7 @@
 import { initializeApp } from 'firebase/app';
 import {
   GoogleAuthProvider,
+  getAdditionalUserInfo,
   signInWithRedirect,
   getRedirectResult,
   getAuth,
@@ -11,7 +12,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from 'firebase/auth';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, doc, addDoc, getDoc, } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 
@@ -53,6 +54,7 @@ export {
   auth,
   provider,
   GoogleAuthProvider,
+  getAdditionalUserInfo,
   db,
   storage,
   createUserWithEmailAndPassword,
@@ -62,7 +64,9 @@ export {
   getRedirectResult,
   getFirestore,
   collection,
+  doc,
   addDoc,
+  getDoc,
   ref,
   uploadBytes
 };

@@ -7,8 +7,11 @@ import {
   signInWithRedirect,
   collection,
   db,
-  addDoc
+  doc,
+  addDoc,
+  getDoc
 } from '../../../server';
+import { User as FirebaseUser } from 'firebase/auth';
 
 /**
  * TODO: Google Sign-in/up
@@ -75,14 +78,28 @@ export function authStateChanged(props: {
   auth.onAuthStateChanged(async (user) => {
     if (user) {
       /*
-            When authState changes, that means a user has logged in.
-            So, could create User document at this time.
-            */
+      When authState changes, that means a user has logged in.
+      So, could create User document at this time.
+      */
+
       // await createUserDocument(user?.email);
-      props.navigation.navigate('HomeScreen');
+      props.navigation.navigate(await createOrLogin(user));
     }
   });
 }
+
+const createOrLogin = async (user: FirebaseUser): Promise<string> => {
+  const docRef = doc(db, 'users', user.uid);
+  const docSnapshot = await getDoc(docRef);
+
+  // user is logging in, so take directly to HomeScreen
+  if (docSnapshot.exists()) {
+    return 'HomeScreen';
+  }
+
+  // otherwise, they're creating an account and need to sign the waiver
+  return 'WaiverScreen';
+};
 
 export const createUserDocument = async (email: string | null | undefined) => {
   try {
