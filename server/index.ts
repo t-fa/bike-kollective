@@ -16,6 +16,7 @@ import {
 import { getFirestore, collection, doc, addDoc, getDoc, setDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 
+
 const firebaseConfig = {
   apiKey: 'AIzaSyDRvToZeMmzwEj_6_ugenBxPvgtjVUZGVs',
   authDomain: 'the-bike-kollective-a8f89.firebaseapp.com',
@@ -80,4 +81,3 @@ export {
   ourFirestore,
   ourStorage
 };
-
