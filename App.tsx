@@ -13,6 +13,7 @@ export type RootStackParamList = {
     RegisterScreen: undefined;
     WaiverScreen: undefined;
     HomeScreen: undefined;
+    AddBikeScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator();

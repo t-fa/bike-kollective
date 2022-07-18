@@ -1,8 +1,10 @@
-//import express, {Request, Response} from "express";
-//import bodyParser from "body-parser";
+// import express, {Request, Response} from "express";
+// import bodyParser from "body-parser";
+
 import { initializeApp } from 'firebase/app';
 import {
   GoogleAuthProvider,
+  getAdditionalUserInfo,
   signInWithRedirect,
   getRedirectResult,
   getAuth,
@@ -10,9 +12,9 @@ import {
   signInWithEmailAndPassword,
   signOut
 } from 'firebase/auth';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes } from "firebase/storage";
 
+import { getFirestore, collection, doc, addDoc, getDoc, setDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDRvToZeMmzwEj_6_ugenBxPvgtjVUZGVs',
@@ -22,6 +24,41 @@ const firebaseConfig = {
   messagingSenderId: '225142820895',
   appId: '1:225142820895:web:9232a05b139d743c1b852a',
   measurementId: 'G-TCPV9WSHNH'
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const provider = new GoogleAuthProvider();
+const db = getFirestore(firebaseApp);
+const storage = getStorage(firebaseApp);
+
+// create object, tired of messing with all these import/exports
+const ourGoogleAuth = {
+  auth: auth,
+  provider: provider,
+  googleAuthProvider: GoogleAuthProvider,       // need a static reference to call some methods
+  getAdditionalUserInfo: getAdditionalUserInfo,
+  signInWithRedirect: signInWithRedirect,
+  getRedirectResult: getRedirectResult,
+  getAuth: getAuth,
+  createUserWithEmailAndPassword: createUserWithEmailAndPassword,
+  signInWithEmailAndPassword: signInWithEmailAndPassword,
+  signOut: signOut
+};
+
+const ourFirestore = {
+  db: db,
+  collection: collection,
+  doc: doc,
+  addDoc: addDoc,
+  getDoc: getDoc,
+  setDoc: setDoc
+};
+
+const ourStorage = {
+  storage: storage,
+  ref: ref,
+  uploadBytes: uploadBytes
 };
 
 /*const app = express();
@@ -38,29 +75,9 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}...`);
 });*/
 
-const firebaseApp = initializeApp(firebaseConfig);
-const auth = getAuth(firebaseApp);
-const provider = new GoogleAuthProvider();
-const db = getFirestore(firebaseApp);
-const storage = getStorage(firebaseApp);
-
-// need to export GoogleAuthProvider  to use its static methods,
-// since you can't use static methods from an instance of a class, like provider (for some reason)
-
 export {
-  firebaseApp,
-  auth,
-  provider,
-  GoogleAuthProvider,
-  db,
-  storage,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  signInWithRedirect,
-  getRedirectResult,
-  collection,
-  addDoc,
-  ref,
-  uploadBytes
+  ourGoogleAuth,
+  ourFirestore,
+  ourStorage
 };
+

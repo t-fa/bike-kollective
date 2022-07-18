@@ -53,6 +53,19 @@ const styles = StyleSheet.create({
   link: {
     fontWeight: 'bold',
     color: 'darkblue'
+  },
+  scrollViewWaiver: {
+    flex: 1,
+    backgroundColor: 'lightgray'
+  },
+  scrollViewText: {
+    fontSize: 30,
+    marginHorizontal: 20,
+    marginVertical: 20
+  },
+  emptySpace: {
+    paddingHorizontal: 40,
+    paddingVertical: 40
   }
 });
 

@@ -8,9 +8,11 @@ import {
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../App';
-import { auth } from '../../../server';
 import styles from '../styles/StyleSheet';
-import { emailPasswordCreateUser } from '../../../firebase/authentication';
+import {
+  authStateChanged,
+  emailPasswordCreateUser
+} from '../firebase/authentication';
 
 type RegisterScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -23,13 +25,9 @@ const RegisterScreen: React.FC<RegisterScreenProps> = (props) => {
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
 
-  // attach listener to navigate when user logs in, for now
+  // Navigate to HomeScreen once user creates account
   useEffect(() => {
-    return auth.onAuthStateChanged((user) => {
-      if (user) {
-        props.navigation.navigate('HomeScreen');
-      }
-    });
+    return authStateChanged(props);
   }, []);
 
   return (
