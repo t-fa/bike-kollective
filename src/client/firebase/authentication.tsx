@@ -1,5 +1,6 @@
-import { ourAuth, ourFirestore, User as FirebaseUser } from '../../../server';
+import { ourAuth } from '../../../server';
 import { Navigation, Screens } from '../types/types';
+import { createDocumentFromAuthenticatedUser } from './firestore';
 
 /**
  * Create new account (if using Google Sign In) or go to RegisterScreen.
@@ -10,31 +11,30 @@ export const agreeToWaiver = async (navigation: Navigation) => {
   const currentUser = ourAuth.auth.currentUser;
   if (currentUser !== null) {
     await createDocumentFromAuthenticatedUser(currentUser, true);
+    alert('Account successfully created!');
     navigation.navigate(Screens.HomeScreen);
   } else {
     navigation.navigate(Screens.RegisterScreen);
   }
 };
+
 /**
- * Handle navigation based on logging in or signing up,
- * whether auth state has changed from Google Sign In or email & password authentication.
+ * If on LoginScreen and already logged in, navigate to HomeScreen
  * */
 export function authStateChanged(navigation: Navigation) {
   ourAuth.auth.onAuthStateChanged(async (user) => {
-    // navigate only when user has been authenticated
     if (user) {
-      if (await documentExists(user.uid)) {
-        navigation.navigate(Screens.HomeScreen);
-      } else {
-        navigation.navigate(Screens.WaiverScreen);
-      }
+      navigation.navigate(Screens.HomeScreen);
     }
   });
 }
+
 /**
  * Authenticate new user and create new document using email and password
  * */
 export const emailPasswordCreateUser = async (
+  navigation: Navigation,
+  name: string,
   email: string,
   password: string
 ): Promise<void> => {
@@ -47,9 +47,11 @@ export const emailPasswordCreateUser = async (
       await createDocumentFromAuthenticatedUser(
         currentUser,
         false,
-        email,
-        password
+        name,
+        email
       );
+      alert('Account successfully created!');
+      navigation.navigate(Screens.HomeScreen);
     }
   } catch (error) {
     alert(error.code);
@@ -60,6 +62,7 @@ export const emailPasswordCreateUser = async (
  * Sign in using email and password
  * */
 export const emailPasswordSignIn = async (
+  navigation: Navigation,
   email: string,
   password: string
 ): Promise<void> => {
@@ -67,6 +70,9 @@ export const emailPasswordSignIn = async (
 
   try {
     await ourAuth.signInWithEmailAndPassword(ourAuth.auth, email, password);
+    if (ourAuth.auth.currentUser != null) {
+      navigation.navigate(Screens.HomeScreen);
+    }
   } catch (error) {
     alert(error.code);
   }
@@ -74,24 +80,48 @@ export const emailPasswordSignIn = async (
 
 /**
  * Google Sign In (works only with Web, no mobile - for now?)
- * Once user is signed in, an observer will notice and a document
- * will be created in Firestore from there.
+ * Determine whether logging in or new account creation is needed
  * */
-export const googleSignIn = async (): Promise<void> => {
-  // Start a sign-in process for an unauthenticated user.
+export const googleSignIn = async (navigation: Navigation): Promise<void> => {
   try {
+    // a popup is used to display the Google Sign In
+    const result = await ourAuth.signInWithPopup(
+      ourAuth.auth,
+      ourAuth.provider
+    );
+    if (result) {
+      /* Can get profile picture, among other things, from userDetails */
+      const userDetails = ourAuth.getAdditionalUserInfo(result);
+      if (userDetails?.isNewUser) {
+        navigation.navigate(Screens.WaiverScreen);
+      } else {
+        navigation.navigate(Screens.HomeScreen);
+      }
+    }
+
+    /* This method would redirect to a new screen for the Google Sign In
+     *  and return, which would make more sense in mobile.
+     *  However, getting the redirect result doesn't work. */
+    /*
+    console.log("Before signInWithRedirect");
     await ourAuth.signInWithRedirect(ourAuth.auth, ourAuth.provider);
+    console.log("After signInWithRedirect");
+
+    const result = await ourAuth.getRedirectResult(ourAuth.auth);
+    console.log("After getRedirectResult", result);
+
+    if (result) {
+      const userDetails = ourAuth.getAdditionalUserInfo(result);
+      if (userDetails?.isNewUser) {
+        navigation.navigate(Screens.WaiverScreen);
+      } else {
+        navigation.navigate(Screens.HomeScreen);
+      }
+    }
+    */
   } catch (error) {
     alert(error.code);
   }
-  /* Can't get getRedirectResult to work */
-  /*const result = await getRedirectResult(auth);
-      if (result) {
-          const credential = GoogleAuthProvider.credentialFromResult(result);
-          const token = credential?.accessToken;
-          const user = result?.user;
-          await createUserDocument(user?.email);
-      }*/
 };
 
 /**
@@ -104,49 +134,4 @@ export const userSignOut = async (): Promise<void> => {
   } catch (error) {
     alert(error.code);
   }
-};
-
-/**
- * Create Firestore document using information from authenticated user.
- * Document can only be written after a user has been authenticated.
- * */
-const createDocumentFromAuthenticatedUser = async (
-  user: FirebaseUser,
-  fromGoogle: boolean,
-  userName?: string,
-  email?: string
-) => {
-  try {
-    // TODO: can probably be shortened - only name and email change between this if and else
-    if (fromGoogle) {
-      await ourFirestore.setDoc(
-        ourFirestore.doc(ourFirestore.db, '/users', user.uid),
-        {
-          userId: user.uid,
-          name: user.email,
-          email: user.email
-        }
-      );
-    } else {
-      await ourFirestore.setDoc(
-        ourFirestore.doc(ourFirestore.db, '/users', user.uid),
-        {
-          userId: user.uid,
-          name: userName,
-          email: email
-        }
-      );
-    }
-  } catch (e) {
-    console.error('Error adding document: ', e);
-  }
-};
-
-/**
- * Check Firestore for existence of document, given the userId.
- * */
-const documentExists = async (userId: string): Promise<boolean> => {
-  const documentReference = ourFirestore.doc(ourFirestore.db, '/users', userId);
-  const documentSnapshot = await ourFirestore.getDoc(documentReference);
-  return documentSnapshot.exists();
 };

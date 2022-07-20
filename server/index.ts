@@ -5,6 +5,7 @@ import { initializeApp } from 'firebase/app';
 import {
   GoogleAuthProvider,
   getAdditionalUserInfo,
+  signInWithPopup,
   signInWithRedirect,
   getRedirectResult,
   getAuth,
@@ -38,6 +39,7 @@ const ourAuth = {
   provider: provider,
   googleAuthProvider: GoogleAuthProvider,      // need this static reference to call some methods
   getAdditionalUserInfo: getAdditionalUserInfo,
+  signInWithPopup: signInWithPopup,
   signInWithRedirect: signInWithRedirect,
   getRedirectResult: getRedirectResult,
   getAuth: getAuth,

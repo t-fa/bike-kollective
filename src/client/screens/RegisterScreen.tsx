@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   KeyboardAvoidingView,
   Text,
@@ -7,10 +7,7 @@ import {
   View
 } from 'react-native';
 import styles from '../styles/StyleSheet';
-import {
-  authStateChanged,
-  emailPasswordCreateUser
-} from '../firebase/authentication';
+import { emailPasswordCreateUser } from '../firebase/authentication';
 import { RegisterScreenProps, Screens } from '../types/types';
 
 const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
@@ -18,11 +15,6 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
-
-  // navigate to HomeScreen once user creates account
-  useEffect(() => {
-    return authStateChanged(navigation);
-  }, []);
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -58,7 +50,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => {
-            emailPasswordCreateUser(email, password);
+            emailPasswordCreateUser(navigation, name, email, password);
           }}
           style={styles.button}
         >

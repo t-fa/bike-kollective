@@ -19,7 +19,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
-  // navigate once user logs in (or is already logged in)
+  // navigate to HomeScreen if already logged in when starting app
   useEffect(() => {
     return authStateChanged(navigation);
   }, []);
@@ -45,7 +45,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => {
-            emailPasswordSignIn(email, password);
+            emailPasswordSignIn(navigation, email, password);
           }}
           style={styles.button}
         >
@@ -63,7 +63,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
         <TouchableOpacity
           onPress={() => {
-            googleSignIn();
+            googleSignIn(navigation);
           }}
           style={[styles.button, styles.buttonOutline]}
         >
