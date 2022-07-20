@@ -8,13 +8,22 @@ type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'HomeScreen'>;
 // can't have unused parameter. Add "props" later
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   return (
-    <View>
-      <Text>The home screen</Text>
-      <Button
-        title="Add a Bike"
-        onPress={() => navigation.navigate('AddBikeScreen')}
-      ></Button>
-    </View>
+    <>
+      <View style={{ padding: '10px' }}>
+        <Text>The home screen</Text>
+        <Button
+          title="Add a Bike"
+          onPress={() => navigation.navigate('AddBikeScreen')}
+        />
+      </View>
+
+      <View style={{ padding: '10px' }}>
+        <Button
+          title="View Bikes"
+          onPress={() => navigation.navigate('ViewBikeScreen')}
+        />
+      </View>
+    </>
   );
 };
 

@@ -8,10 +8,10 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut,
+  signOut
 } from 'firebase/auth';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes} from 'firebase/storage';
+import { getStorage, ref, uploadBytes } from 'firebase/storage';
 // import 'firebase/storage';
 
 // import {uploadBytes, ref, getStorage} from 'firebase/storage'
@@ -56,7 +56,6 @@ const db = getFirestore(firebaseApp);
 const auth = getAuth(firebaseApp);
 const storage = getStorage(firebaseApp);
 
-
 // const analytics = getAnalytics(app);
 export {
   firebaseApp,
@@ -67,7 +66,7 @@ export {
   addDoc,
   getFirestore,
   ref,
-  uploadBytes, 
+  uploadBytes,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut
