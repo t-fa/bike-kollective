@@ -6,6 +6,7 @@ export type RootStackParamList = {
   WaiverScreen: undefined;
   HomeScreen: undefined;
   //AddBikeScreen: undefined;
+  BikeDetailScreen: undefined;
 };
 
 export enum Screens {
@@ -13,7 +14,8 @@ export enum Screens {
   LoginScreen = 'LoginScreen',
   RegisterScreen = 'RegisterScreen',
   WaiverScreen = 'WaiverScreen',
-  AddBikeScreen = 'AddBikeScreen'
+  AddBikeScreen = 'AddBikeScreen',
+  BikeDetailScreen = 'BikeDetailScreen'
 }
 
 export type HomeScreenProps = NativeStackScreenProps<
@@ -34,6 +36,11 @@ export type RegisterScreenProps = NativeStackScreenProps<
 export type WaiverScreenProps = NativeStackScreenProps<
   RootStackParamList,
   Screens.WaiverScreen
+>;
+
+export type BikeDetailScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  Screens.BikeDetailScreen
 >;
 
 export type Navigation = {
