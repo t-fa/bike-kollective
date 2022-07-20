@@ -10,12 +10,11 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
+  User
 } from 'firebase/auth';
-
 import { getFirestore, collection, doc, addDoc, getDoc, setDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes } from "firebase/storage";
-
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDRvToZeMmzwEj_6_ugenBxPvgtjVUZGVs',
@@ -34,10 +33,10 @@ const db = getFirestore(firebaseApp);
 const storage = getStorage(firebaseApp);
 
 // create object, tired of messing with all these import/exports
-const ourGoogleAuth = {
+const ourAuth = {
   auth: auth,
   provider: provider,
-  googleAuthProvider: GoogleAuthProvider,       // need a static reference to call some methods
+  googleAuthProvider: GoogleAuthProvider,      // need this static reference to call some methods
   getAdditionalUserInfo: getAdditionalUserInfo,
   signInWithRedirect: signInWithRedirect,
   getRedirectResult: getRedirectResult,
@@ -77,7 +76,8 @@ app.listen(PORT, () => {
 });*/
 
 export {
-  ourGoogleAuth,
+  ourAuth,
   ourFirestore,
-  ourStorage
+  ourStorage,
+  User
 };

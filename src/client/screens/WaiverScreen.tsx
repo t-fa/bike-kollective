@@ -7,15 +7,9 @@ import {
   Dimensions,
   StyleSheet
 } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../App';
 import styles from '../styles/StyleSheet';
 import { agreeToWaiver } from '../firebase/authentication';
-
-type WaiverScreenProps = NativeStackScreenProps<
-  RootStackParamList,
-  'WaiverScreen'
->;
+import { WaiverScreenProps } from '../types/types';
 
 const waiverMessage = `I HEREBY ASSUME ALL OF THE RISKS OF PARTICIPATING IN ANY/ALL ACTIVITIES ASSOCIATED WITH\n "The Bike Kollective,"\n
 including by way of example and not limitation, any risks that may arise from negligence or carelessness on the part of the persons or entities being released, from dangerous or defective equipment or property owned, maintained, or controlled by them, or because of their possible liability without fault.\n
@@ -27,7 +21,7 @@ const screen = Dimensions.get('screen');
 const { height } = Dimensions.get('window');
 const { width } = Dimensions.get('window');
 
-const WaiverScreen: React.FC<WaiverScreenProps> = (props) => {
+const WaiverScreen: React.FC<WaiverScreenProps> = ({ navigation }) => {
   const [dimensions, setDimensions] = useState({ window, screen });
 
   useEffect(() => {
@@ -55,7 +49,7 @@ const WaiverScreen: React.FC<WaiverScreenProps> = (props) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => {
-            agreeToWaiver(props);
+            agreeToWaiver(navigation);
           }}
           style={styles.button}
         >

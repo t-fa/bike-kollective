@@ -1,18 +1,15 @@
 import React from 'react';
 import { Text, View, Button } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../App';
+import { HomeScreenProps } from '../types/types';
 
-type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'HomeScreen'>;
-
-// can't have unused parameter. Add "props" later
-const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+// can't have unused parameter
+const HomeScreen: React.FC<HomeScreenProps> = (/*{ navigation }*/) => {
   return (
     <View>
       <Text>The home screen</Text>
       <Button
         title="Add a Bike"
-        onPress={() => navigation.navigate('AddBikeScreen')}
+        /*onPress={() => navigation.navigate('AddBikeScreen')}*/
       ></Button>
     </View>
   );

@@ -7,15 +7,8 @@ import LoginScreen from "./src/client/screens/LoginScreen";
 import RegisterScreen from "./src/client/screens/RegisterScreen";
 import WaiverScreen from "./src/client/screens/WaiverScreen";
 import HomeScreen from "./src/client/screens/HomeScreen";
-import AddBikeScreen from './src/client/screens/addBike';
-
-export type RootStackParamList = {
-    LoginScreen: undefined;
-    RegisterScreen: undefined;
-    WaiverScreen: undefined;
-    HomeScreen: undefined;
-    AddBikeScreen: undefined;
-};
+import {Screens} from "./src/client/types/types";
+// import AddBikeScreen from './src/client/screens/addBike';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,11 +16,11 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ title: 'The Bike Kollective' }} />
-        <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{ title: 'Register' }}  />
-        <Stack.Screen name="WaiverScreen" component={WaiverScreen} options={{ title: 'Sign Accident Waiver' }} />
-        <Stack.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'The Bike Kollective' }} />
-        <Stack.Screen name="AddBikeScreen" component={AddBikeScreen} options={{ title: 'Add Bike To System' }} />
+        <Stack.Screen name={Screens.LoginScreen} component={LoginScreen} options={{ title: 'The Bike Kollective' }} />
+        <Stack.Screen name={Screens.RegisterScreen} component={RegisterScreen} options={{ title: 'Register' }}  />
+        <Stack.Screen name={Screens.WaiverScreen} component={WaiverScreen} options={{ title: 'Sign Accident Waiver' }} />
+        <Stack.Screen name={Screens.HomeScreen} component={HomeScreen} options={{ title: 'The Bike Kollective' }} />
+        {/*<Stack.Screen name="{Screens.AddBikeScreen}" component={AddBikeScreen} options={{ title: 'Add Bike To System' }} />*/}
       </Stack.Navigator>
     </NavigationContainer>
   );
