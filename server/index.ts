@@ -14,8 +14,15 @@ import {
   signOut,
   User
 } from 'firebase/auth';
-import { getFirestore, collection, doc, addDoc, getDoc, setDoc } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import {
+  getFirestore,
+  collection,
+  doc,
+  addDoc,
+  getDoc,
+  setDoc
+} from 'firebase/firestore';
+import { getStorage, ref, uploadBytes } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDRvToZeMmzwEj_6_ugenBxPvgtjVUZGVs',
@@ -37,7 +44,7 @@ const storage = getStorage(firebaseApp);
 const ourAuth = {
   auth: auth,
   provider: provider,
-  googleAuthProvider: GoogleAuthProvider,      // need this static reference to call some methods
+  googleAuthProvider: GoogleAuthProvider, // need this static reference to call some methods
   getAdditionalUserInfo: getAdditionalUserInfo,
   signInWithPopup: signInWithPopup,
   signInWithRedirect: signInWithRedirect,
@@ -77,9 +84,4 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}...`);
 });*/
 
-export {
-  ourAuth,
-  ourFirestore,
-  ourStorage,
-  User
-};
+export { ourAuth, ourFirestore, ourStorage, User };
