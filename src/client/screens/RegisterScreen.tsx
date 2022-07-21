@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   KeyboardAvoidingView,
   Text,
@@ -6,31 +6,15 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../../App';
-import { auth } from '../../../server';
 import styles from '../styles/StyleSheet';
-import Account from '../../../firebase/account';
+import { emailPasswordCreateUser } from '../firebase/authentication';
+import { RegisterScreenProps, Screens } from '../types/types';
 
-type RegisterScreenProps = NativeStackScreenProps<
-  RootStackParamList,
-  'RegisterScreen'
->;
-
-const RegisterScreen: React.FC<RegisterScreenProps> = (props) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-
-  // attach listener to navigate when user logs in, for now
-  useEffect(() => {
-    return auth.onAuthStateChanged((user) => {
-      if (user) {
-        props.navigation.navigate('HomeScreen');
-      }
-    });
-  }, []);
+const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -38,26 +22,26 @@ const RegisterScreen: React.FC<RegisterScreenProps> = (props) => {
         <TextInput
           placeholder="Name"
           value={name}
-          onChangeText={(text) => setName(text)}
+          onChangeText={(text: string) => setName(text)}
           style={styles.input}
         />
         <TextInput
           placeholder="Email"
           value={email}
-          onChangeText={(text) => setEmail(text)}
+          onChangeText={(text: string) => setEmail(text)}
           style={styles.input}
         />
         <TextInput
           placeholder="Password"
           value={password}
-          onChangeText={(text) => setPassword(text)}
+          onChangeText={(text: string) => setPassword(text)}
           style={styles.input}
           secureTextEntry
         />
         <TextInput
           placeholder="Confirm password"
           value={confirmPassword}
-          onChangeText={(text) => setConfirmPassword(text)}
+          onChangeText={(text: string) => setConfirmPassword(text)}
           style={styles.input}
           secureTextEntry
         />
@@ -66,7 +50,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = (props) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => {
-            Account.emailPasswordCreateUser(email, password);
+            emailPasswordCreateUser(navigation, name, email, password);
           }}
           style={styles.button}
         >
@@ -76,7 +60,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = (props) => {
         <View style={styles.row}>
           <Text>{'Already have an account? '}</Text>
           <TouchableOpacity
-            onPress={() => props.navigation.replace('LoginScreen')}
+            onPress={() => navigation.replace(Screens.LoginScreen)}
           >
             <Text style={styles.link}>Sign in</Text>
           </TouchableOpacity>

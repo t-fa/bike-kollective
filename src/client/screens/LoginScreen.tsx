@@ -6,29 +6,22 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import styles from '../styles/StyleSheet';
-import Account from '../../../firebase/account';
-import { auth } from '../../../server';
-import { RootStackParamList } from '../../../App';
+import {
+  authStateChanged,
+  emailPasswordSignIn,
+  googleSignIn,
+  userSignOut
+} from '../firebase/authentication';
+import { LoginScreenProps, Screens } from '../types/types';
 
-type LoginScreenProps = NativeStackScreenProps<
-  RootStackParamList,
-  'LoginScreen'
->;
+const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
 
-const LoginScreen: React.FC<LoginScreenProps> = (props) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  // TODO: should be somewhere else?
-  // if user is already logged in, go to HomeScreen
+  // navigate to HomeScreen if already logged in when starting app
   useEffect(() => {
-    return auth.onAuthStateChanged((user) => {
-      if (user) {
-        props.navigation.navigate('HomeScreen');
-      }
-    });
+    return authStateChanged(navigation);
   }, []);
 
   return (
@@ -37,13 +30,13 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
         <TextInput
           placeholder="Email"
           value={email}
-          onChangeText={(text) => setEmail(text)}
+          onChangeText={(text: string) => setEmail(text)}
           style={styles.input}
         />
         <TextInput
           placeholder="Password"
           value={password}
-          onChangeText={(text) => setPassword(text)}
+          onChangeText={(text: string) => setPassword(text)}
           style={styles.input}
           secureTextEntry
         />
@@ -52,7 +45,7 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => {
-            Account.emailPasswordSignIn(email, password);
+            emailPasswordSignIn(navigation, email, password);
           }}
           style={styles.button}
         >
@@ -61,7 +54,7 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
 
         <TouchableOpacity
           onPress={() => {
-            props.navigation.replace('WaiverScreen');
+            navigation.navigate(Screens.WaiverScreen);
           }}
           style={[styles.button, styles.buttonOutline]}
         >
@@ -69,9 +62,9 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          /*onPress={() => {
-              Account.googleSignIn(email, password);
-            }}*/
+          onPress={() => {
+            googleSignIn(navigation);
+          }}
           style={[styles.button, styles.buttonOutline]}
         >
           <Text style={styles.buttonOutlineText}>Google</Text>
@@ -80,7 +73,7 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
         <View style={styles.row}>
           <Text>{"Don't have an account? "}</Text>
           <TouchableOpacity
-            onPress={() => props.navigation.replace('WaiverScreen')}
+            onPress={() => navigation.navigate(Screens.WaiverScreen)}
           >
             <Text style={styles.link}>Sign up</Text>
           </TouchableOpacity>
@@ -88,7 +81,7 @@ const LoginScreen: React.FC<LoginScreenProps> = (props) => {
 
         <View style={styles.row}>
           <Text>Sign in using another account? </Text>
-          <TouchableOpacity onPress={() => Account.signOut()}>
+          <TouchableOpacity onPress={() => userSignOut()}>
             <Text style={styles.link}>Log out</Text>
           </TouchableOpacity>
         </View>

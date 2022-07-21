@@ -1,30 +1,30 @@
 // import express, {Request, Response} from "express";
 // import bodyParser from "body-parser";
-// import { getFirestore } from 'firebase/firestore';
 
-// Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
 import {
+  GoogleAuthProvider,
+  getAdditionalUserInfo,
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
+  User
 } from 'firebase/auth';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  doc,
+  addDoc,
+  getDoc,
+  setDoc
+} from 'firebase/firestore';
 import { getStorage, ref, uploadBytes } from 'firebase/storage';
-// import 'firebase/storage';
 
-// import {uploadBytes, ref, getStorage} from 'firebase/storage'
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  // apparently it's quite a pain to get the .env working with React Native
-  // will look into later, or maybe someone else can?
-  // Will use the key for now, since I did that in the first place anyway
   apiKey: 'AIzaSyDRvToZeMmzwEj_6_ugenBxPvgtjVUZGVs',
   authDomain: 'the-bike-kollective-a8f89.firebaseapp.com',
   projectId: 'the-bike-kollective-a8f89',
@@ -34,40 +34,54 @@ const firebaseConfig = {
   measurementId: 'G-TCPV9WSHNH'
 };
 
-// const app = express();
-// app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(bodyParser.json());
-
-// const PORT = process.env.PORT || 8080;
-
-// app.get('/', (req: Request, res: Response) => {
-//     res.send('hello');
-// })
-
-// app.listen(PORT, () => {
-//   console.log(`Server listening on port ${PORT}...`);
-// });
-
 const firebaseApp = initializeApp(firebaseConfig);
-
-const db = getFirestore(firebaseApp);
-
-// Initialize Firebase
 const auth = getAuth(firebaseApp);
+const provider = new GoogleAuthProvider();
+const db = getFirestore(firebaseApp);
 const storage = getStorage(firebaseApp);
 
-// const analytics = getAnalytics(app);
-export {
-  firebaseApp,
-  auth,
-  db,
-  storage,
-  collection,
-  addDoc,
-  getFirestore,
-  ref,
-  uploadBytes,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut
+// create object, tired of messing with all these import/exports
+const ourAuth = {
+  auth: auth,
+  provider: provider,
+  googleAuthProvider: GoogleAuthProvider, // need this static reference to call some methods
+  getAdditionalUserInfo: getAdditionalUserInfo,
+  signInWithPopup: signInWithPopup,
+  signInWithRedirect: signInWithRedirect,
+  getRedirectResult: getRedirectResult,
+  getAuth: getAuth,
+  createUserWithEmailAndPassword: createUserWithEmailAndPassword,
+  signInWithEmailAndPassword: signInWithEmailAndPassword,
+  signOut: signOut
 };
+
+const ourFirestore = {
+  db: db,
+  collection: collection,
+  doc: doc,
+  addDoc: addDoc,
+  getDoc: getDoc,
+  setDoc: setDoc
+};
+
+const ourStorage = {
+  storage: storage,
+  ref: ref,
+  uploadBytes: uploadBytes
+};
+
+/*const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+const PORT = process.env.PORT || 8080;
+
+app.get('/', (req: Request, res: Response) => {
+    res.send('hello');
+})
+
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}...`);
+});*/
+
+export { ourAuth, ourFirestore, ourStorage, User };
