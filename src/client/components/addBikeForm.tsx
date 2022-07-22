@@ -8,17 +8,9 @@ import {
 } from 'react-native';
 import { Formik, FormikProps, FormikValues } from 'formik';
 import * as Yup from 'yup';
-import {
-  auth,
-  db,
-  ref,
-  storage,
-  uploadBytes,
-  addDoc,
-  collection
-} from '../../../server';
+import { ourAuth, ourFirestore, ourStorage } from '../../../server';
 
-const AddBikeForm: React.FC = ({ savedPhoto }) => {
+const AddBikeForm: React.FC = ({ formData, updateForm, bikePhotoUri }) => {
   // Validation
   const validate = Yup.object({
     model: Yup.string()
@@ -30,22 +22,11 @@ const AddBikeForm: React.FC = ({ savedPhoto }) => {
     lockCombination: Yup.string().required('Required')
   });
 
-  // Initial value of bike
-  const bikeValues = {
-    model: '',
-    comments: '',
-    issues: '',
-    location: '',
-    lockCombination: '',
-    user: auth.currentUser?.uid,
-    photo: savedPhoto
-  };
-
   return (
     <View style={styles.container}>
       <Formik
         // Set initial values
-        initialValues={bikeValues}
+        initialValues={formData}
         // validation
         validationSchema={validate}
         // On submit, post data to server
@@ -53,24 +34,53 @@ const AddBikeForm: React.FC = ({ savedPhoto }) => {
           // Create a reference for phoho
           const pictureLocation = `images/${Math.random().toString(36)}`;
 
-          // Set photo
-          values.photo = pictureLocation;
-
-          const pictureReference = ref(storage, pictureLocation);
-
+          // Empty photo
+          if (bikePhotoUri == null) {
+            alert('Please add a photo');
+            return;
+          }
           // Get image and convert to bytes
-          const img = await fetch(savedPhoto.uri);
+          const img = await fetch(bikePhotoUri.uri);
           const bytes = await img.blob();
 
+          values.photo = pictureLocation;
+
+          const pictureReference = ourStorage.ref(
+            ourStorage.storage,
+            pictureLocation
+          );
+
           // Saved Image
-          uploadBytes(pictureReference, bytes).then(() => {
+          ourStorage.uploadBytes(pictureReference, bytes).then(() => {
             console.log('picture saved');
           });
 
           // Add bike data to firestore
-          const docRef = await addDoc(collection(db, 'bikes'), values);
-          console.log(docRef.id, 'saved');
+          await ourFirestore.addDoc(
+            ourFirestore.collection(ourFirestore.db, 'bikes'),
+            values
+          );
           alert('Bike Added');
+          // Reset values
+          {
+            (formData.model = ''),
+              (formData.comments = ''),
+              (formData.issues = ''),
+              (formData.location = ''),
+              (formData.lockCombination = ''),
+              (formData.photoLocation = ''),
+              formData.photo;
+          }
+          await updateForm({
+            model: '',
+            comments: '',
+            issues: '',
+            location: '',
+            lockCombination: '',
+            photoLocation: '',
+            user: ourAuth.auth.currentUser?.uid,
+            photo: null
+          });
           resetForm(); // reset form
         }}
       >
@@ -83,7 +93,10 @@ const AddBikeForm: React.FC = ({ savedPhoto }) => {
               placeholder="Bike model"
               onChangeText={props.handleChange('model')}
               value={props.values.model}
-              onBlur={props.handleBlur('model')}
+              onBlur={() => {
+                updateForm(props.values);
+                props.handleBlur('model');
+              }}
             ></TextInput>
             <Text style={styles.errors}>
               {props.touched.model && props.errors.model}
@@ -96,7 +109,10 @@ const AddBikeForm: React.FC = ({ savedPhoto }) => {
               placeholder="Stuff riders should know"
               onChangeText={props.handleChange('comments')}
               value={props.values.comments}
-              onBlur={props.handleBlur('comments')}
+              onBlur={() => {
+                updateForm(props.values);
+                props.handleBlur('comments');
+              }}
             ></TextInput>
             <Text style={styles.errors}>
               {props.touched.comments && props.errors.comments}
@@ -109,7 +125,10 @@ const AddBikeForm: React.FC = ({ savedPhoto }) => {
               placeholder="Issues with bike"
               onChangeText={props.handleChange('issues')}
               value={props.values.issues}
-              onBlur={props.handleBlur('issues')}
+              onBlur={() => {
+                updateForm(props.values);
+                props.handleBlur('issues');
+              }}
             ></TextInput>
             <Text style={styles.errors}>
               {props.touched.issues && props.errors.issues}
@@ -121,7 +140,10 @@ const AddBikeForm: React.FC = ({ savedPhoto }) => {
               placeholder="Current Location of bike"
               onChangeText={props.handleChange('location')}
               value={props.values.location}
-              onBlur={props.handleBlur('location')}
+              onBlur={() => {
+                updateForm(props.values);
+                props.handleBlur('location');
+              }}
             ></TextInput>
             <Text style={styles.errors}>
               {props.touched.location && props.errors.location}
@@ -133,7 +155,10 @@ const AddBikeForm: React.FC = ({ savedPhoto }) => {
               placeholder="Combination to unlock"
               onChangeText={props.handleChange('lockCombination')}
               value={props.values.lockCombination}
-              onBlur={props.handleBlur('lockCombination')}
+              onBlur={() => {
+                updateForm(props.values);
+                props.handleBlur('lockCombination');
+              }}
             ></TextInput>
             <Text style={styles.errors}>
               {props.touched.lockCombination && props.errors.lockCombination}

@@ -20,7 +20,8 @@ import {
   doc,
   addDoc,
   getDoc,
-  setDoc
+  setDoc,
+  getDocs
 } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes } from 'firebase/storage';
 
@@ -61,7 +62,8 @@ const ourFirestore = {
   doc: doc,
   addDoc: addDoc,
   getDoc: getDoc,
-  setDoc: setDoc
+  setDoc: setDoc,
+  getDocs: getDocs
 };
 
 const ourStorage = {
