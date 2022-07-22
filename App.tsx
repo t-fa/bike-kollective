@@ -6,8 +6,9 @@ import LoginScreen from './src/client/screens/LoginScreen';
 import RegisterScreen from './src/client/screens/RegisterScreen';
 import WaiverScreen from './src/client/screens/WaiverScreen';
 import HomeScreen from './src/client/screens/HomeScreen';
-import AddBikeScreen from './src/client/screens/addBike';
 import ViewBikeScreen from './src/client/screens/ViewBikeScreen';
+import AddBikeScreen from './src/client/screens/addBike';
+import ReviewBikeScreen from './src/client/screens/ReviewBike';
 
 export type RootStackParamList = {
   LoginScreen: undefined;
@@ -52,6 +53,11 @@ export default function App() {
           component={ViewBikeScreen}
           options={{ title: 'View Nearby Bikes' }}
         />
+        <Stack.Screen 
+          name="ReviewBikeScreen" 
+          component={ReviewBikeScreen} 
+          options={{ title: 'Review a bike' }} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -20,10 +20,22 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             style={styles.button}
             onPress={() => navigation.navigate('AddBikeScreen')}
           >
-            <Text style={styles.buttonText}>Add a Bike</Text>
+            <Text style={styles.buttonText}>Add A Bike</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
+
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('ReviewBikeScreen')}
+          >
+            <Text style={styles.buttonText}>Review A Bike</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+
       <KeyboardAvoidingView style={styles.container} behavior="padding">
         <TouchableOpacity onPress={() => navigation.navigate('ViewBikeScreen')}>
           <Text>View Nearby Bikes</Text>

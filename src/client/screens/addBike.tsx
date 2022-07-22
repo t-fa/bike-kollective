@@ -12,6 +12,8 @@ import {
   Keyboard
 } from 'react-native';
 import { Camera } from 'expo-camera';
+import { Platform } from 'expo-modules-core';
+import { ourAuth } from '../../../server';
 let camera: Camera;
 
 const AddBikeScreen: React.FC = () => {
@@ -26,7 +28,31 @@ const AddBikeScreen: React.FC = () => {
   const [cameraType, setCameraType] = React.useState(
     Camera.Constants.Type.back
   );
+  const [formData, setFormData] = React.useState({
+    model: '',
+    comments: '',
+    issues: '',
+    location: '',
+    lockCombination: '',
+    user: ourAuth.auth.currentUser?.uid,
+    photo: capturedImage
+  });
 
+  // Update form
+  const _updateForm = (
+    data: React.SetStateAction<{
+      model: string;
+      comments: string;
+      issues: string;
+      location: string;
+      lockCombination: string;
+      user: string | undefined;
+      photo: null;
+    }>
+  ) => {
+    setFormData(data);
+    setCapturedImage(data.photo);
+  };
   // Start Camera
   const __startCamera = async () => {
     // Get permissions
@@ -58,7 +84,6 @@ const AddBikeScreen: React.FC = () => {
 
   // Saves photo and close camera
   const __savePhoto = () => {
-    console.log(capturedImage);
     setStartCamera(false);
   };
 
@@ -75,7 +100,6 @@ const AddBikeScreen: React.FC = () => {
 
   // Front/Back Camera
   const __switchCamera = () => {
-    console.log(cameraType);
     if (cameraType === 'back') {
       setCameraType('front');
     } else {
@@ -85,18 +109,17 @@ const AddBikeScreen: React.FC = () => {
 
   // Removes current saved photo
   const __clearImage = () => {
-    console.log('pressed');
-    console.log(capturedImage);
     if (capturedImage != null) {
       setCapturedImage(null);
-      console.log(capturedImage);
     }
   };
-
+  // https://github.com/necolas/react-native-web/issues/1589
   return (
     <TouchableWithoutFeedback
       onPress={() => {
-        Keyboard.dismiss();
+        if (Platform.OS != 'web') {
+          Keyboard.dismiss();
+        }
       }}
     >
       <View style={styles.container}>
@@ -211,7 +234,11 @@ const AddBikeScreen: React.FC = () => {
             }}
           >
             <Text style={styles.tile}>Add a Bike to Bike Kollective</Text>
-            <AddBikeForm savedPhoto={capturedImage}></AddBikeForm>
+            <AddBikeForm
+              formData={formData}
+              updateForm={_updateForm}
+              bikePhotoUri={capturedImage}
+            ></AddBikeForm>
             <TouchableOpacity
               onPress={__startCamera}
               style={styles.startCamera}
