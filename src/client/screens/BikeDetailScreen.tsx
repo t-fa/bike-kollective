@@ -1,18 +1,34 @@
-import React from 'react';
-import { Text, View, Button } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Text, View, Button, Image } from 'react-native';
 import { BikeDetailScreenProps } from '../types/types';
+import { getBikeImageUrl } from '../firebase/storage';
+import styles from '../styles/StyleSheet';
 
-const BikeDetailScreen: React.FC<
-  BikeDetailScreenProps
-> = (/*{ navigation }*/) => {
+const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({
+  /*navigation,*/ route
+}) => {
+  const [imageUrl, setImageUrl] = useState<string>('');
+  const bike = route.params;
+  console.log(bike);
+
+  useEffect(() => {
+    const getUrl = async () => {
+      setImageUrl(await getBikeImageUrl(bike.photo));
+    };
+    getUrl();
+  }, []);
+
   return (
-    <View>
-      <Text>Model</Text>
-      <Text>Address</Text>
-      <Text>Rating</Text>
-      <Text>Comments</Text>
-      <Text>Issues</Text>
-      <Text>--Picture of Bike--</Text>
+    <View style={styles.container}>
+      <Text>Model: {bike.model}</Text>
+      <Text>Current Location: {bike.currentLocation}</Text>
+      <Text>Rating: {bike.rating} </Text>
+      <Text>Comments: {bike.comments}</Text>
+      <Text>Issues: {bike.issues}</Text>
+      <Image
+        style={{ width: 200, height: 200 }}
+        source={{ uri: imageUrl }}
+      ></Image>
       <Button
         title="Check out"
         /*onPress={() => checkoutBike(bikeId)}*/

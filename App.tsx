@@ -9,13 +9,8 @@ import HomeScreen from './src/client/screens/HomeScreen';
 import ViewBikeScreen from './src/client/screens/ViewBikeScreen';
 import AddBikeScreen from './src/client/screens/addBike';
 import ReviewBikeScreen from './src/client/screens/ReviewBike';
+import BikeDetailScreen from "./src/client/screens/BikeDetailScreen";
 
-export type RootStackParamList = {
-  LoginScreen: undefined;
-  RegisterScreen: undefined;
-  WaiverScreen: undefined;
-  HomeScreen: undefined;
-};
 
 const Stack = createNativeStackNavigator();
 
@@ -57,6 +52,11 @@ export default function App() {
           name="ReviewBikeScreen" 
           component={ReviewBikeScreen} 
           options={{ title: 'Review a bike' }} />
+
+        <Stack.Screen
+          name="BikeDetailScreen"
+          component={BikeDetailScreen}
+          options={{ title: 'Bike Details' }} />
 
       </Stack.Navigator>
     </NavigationContainer>

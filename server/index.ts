@@ -23,7 +23,7 @@ import {
   setDoc,
   getDocs
 } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes } from 'firebase/storage';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDRvToZeMmzwEj_6_ugenBxPvgtjVUZGVs',
@@ -69,7 +69,8 @@ const ourFirestore = {
 const ourStorage = {
   storage: storage,
   ref: ref,
-  uploadBytes: uploadBytes
+  uploadBytes: uploadBytes,
+  getDownloadURL: getDownloadURL
 };
 
 /*const app = express();

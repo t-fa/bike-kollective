@@ -1,5 +1,5 @@
 import { ourFirestore, User as FirebaseUser } from '../../../server';
-// import { Navigation, Screens } from '../types/types';
+import { Bike } from '../types/types';
 
 /**
  * Create Firestore document using information from authenticated user.
@@ -49,9 +49,20 @@ export const createDocumentFromAuthenticatedUser = async (
 /**
  * Return a bike object, given the bike document's Firestore ID
  * */
-/*
-const getBikeFromFirestore = async (bikeId: number) => {
-    // return document
+export const getBikeFromFirestore = async (bikeId: string): Promise<Bike> => {
+  const theBikeDocument = await getDocumentById('bikes', bikeId);
+  return theBikeDocument.data() as Bike;
+};
+
+const getDocumentById = async (collection: string, documentId: string) => {
+  return await ourFirestore.getDoc(
+    ourFirestore.doc(ourFirestore.db, collection, documentId)
+  );
+};
+
+/*const getBikeCollection = async () => {
+    return await ourFirestore.getDocs(
+        ourFirestore.collection(ourFirestore.db, 'bikes'));
 }*/
 
 /**
