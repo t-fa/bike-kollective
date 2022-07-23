@@ -1,16 +1,16 @@
 import React from 'react';
+import { View, Text, Image } from 'react-native';
+import { BikeType } from './types';
 
-import { View, Text } from 'react-native';
+type Props = Pick<BikeType, 'location' | 'model' | 'photo'>;
 
-interface Props {
-  name: string;
-  // TODO get props once firebase is available
-}
-
-const BikeSummary: React.FC<Props> = ({ name }) => {
+const BikeSummary: React.FC<Props> = ({ location, model, photo }) => {
   return (
     <View>
-      <Text>{name}</Text>
+      <Text>{model}</Text>
+      <Image source={{ uri: photo }} />
+      <Text>Latitude: {location.latitude}</Text>
+      <Text>Longitude: {location.longitude}</Text>
     </View>
   );
 };

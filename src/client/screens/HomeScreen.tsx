@@ -37,9 +37,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       </KeyboardAvoidingView>
 
       <KeyboardAvoidingView style={styles.container} behavior="padding">
-        <TouchableOpacity onPress={() => navigation.navigate('ViewBikeScreen')}>
-          <Text>View Nearby Bikes</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => navigation.navigate('ViewBikeScreen')}
+          >
+            <Text style={styles.buttonText}>View Nearby Bikes</Text>
+          </TouchableOpacity>
+        </View>
       </KeyboardAvoidingView>
     </>
   );
