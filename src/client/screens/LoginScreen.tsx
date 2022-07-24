@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   KeyboardAvoidingView,
   Text,
@@ -8,21 +8,17 @@ import {
 } from 'react-native';
 import styles from '../styles/StyleSheet';
 import {
-  authStateChanged,
   emailPasswordSignIn,
   googleSignIn,
   userSignOut
 } from '../firebase/authentication';
 import { LoginScreenProps, Screens } from '../types/types';
+import { useAuth } from '../components/AuthContext';
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-
-  // navigate to HomeScreen if already logged in when starting app
-  useEffect(() => {
-    return authStateChanged(navigation);
-  }, []);
+  const { setIsSignedIn } = useAuth();
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -45,7 +41,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => {
-            emailPasswordSignIn(navigation, email, password);
+            emailPasswordSignIn(setIsSignedIn, email, password);
           }}
           style={styles.button}
         >
@@ -63,7 +59,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
         <TouchableOpacity
           onPress={() => {
-            googleSignIn(navigation);
+            googleSignIn(navigation, setIsSignedIn);
           }}
           style={[styles.button, styles.buttonOutline]}
         >

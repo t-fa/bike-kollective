@@ -70,6 +70,7 @@ export type User = {
   name: string;
   email: string;
   id: string;
+  signedWaiver: boolean;
   bikesOwned: Bike[];
   bikeCurrentlyCheckedOut: Bike;
   banned: boolean;
@@ -83,6 +84,7 @@ export type Bike = {
   issues: string;
   photo: string;
   currentLocation: undefined;
+  currentlyCheckedOut: boolean;
   lockCombination: number;
   stolen: boolean;
 };

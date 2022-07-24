@@ -9,13 +9,20 @@ import { Bike, HomeScreenProps, Screens } from '../types/types';
 import styles from '../styles/StyleSheet';
 import NavigateButton from '../components/NavigateButton';
 import { getBikeFromFirestore } from '../firebase/firestore';
+import { userSignOut } from '../firebase/authentication';
+import { useAuth } from '../components/AuthContext';
 
-// TODO: remove back button from this screen and
-//       add a profile button/area where user can:
-//          log out and view their bikes (and whatever else)
+// TODO: add a profile button/area where user can:
+//          log out | view their bikes | (and whatever else)
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const goToBikeDetailScreen = (bike: Bike) => {
     navigation.navigate(Screens.BikeDetailScreen, bike);
+  };
+
+  const { setIsSignedIn } = useAuth();
+  const onSignOut = async () => {
+    setIsSignedIn(false);
+    await userSignOut();
   };
 
   const [testBike, setTestBike] = useState<Bike>({
@@ -26,6 +33,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     lockCombination: 0,
     model: '',
     owner: undefined,
+    currentlyCheckedOut: false,
     rating: 0,
     stolen: false
   });
@@ -57,7 +65,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         buttonText={'View Nearby Bikes'}
       />
 
-      {/* Just a test */}
+      {/* Remove later */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.buttonOutline}
@@ -65,6 +73,19 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         >
           <Text style={styles.buttonOutlineText}>
             Test: Go to details screen using a bike document
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Remove later */}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.buttonOutline}
+          /* onPress={() => userSignOut()}*/
+          onPress={() => onSignOut()}
+        >
+          <Text style={styles.buttonOutlineText}>
+            Sign out & go to LoginScreen
           </Text>
         </TouchableOpacity>
       </View>

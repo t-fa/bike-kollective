@@ -1,18 +1,23 @@
 import { ourAuth } from '../../../server';
 import { Navigation, Screens } from '../types/types';
 import { createDocumentFromAuthenticatedUser } from './firestore';
+import { Dispatch, SetStateAction } from 'react';
 
 /**
  * Create new account (if using Google Sign In) or go to RegisterScreen.
  * */
-export const agreeToWaiver = async (navigation: Navigation) => {
+export const agreeToWaiver = async (
+  navigation: Navigation,
+  setIsSignedIn: Dispatch<SetStateAction<boolean>>
+) => {
   // If account has been created from Google Sign-in, use
   // default values from their Google account to create a Firestore document.
   const currentUser = ourAuth.auth.currentUser;
   if (currentUser !== null) {
     await createDocumentFromAuthenticatedUser(currentUser, true);
     alert('Account successfully created!');
-    navigation.navigate(Screens.HomeScreen);
+    setIsSignedIn(true);
+    //navigation.navigate(Screens.HomeScreen);
   } else {
     navigation.navigate(Screens.RegisterScreen);
   }
@@ -30,10 +35,23 @@ export function authStateChanged(navigation: Navigation) {
 }
 
 /**
+ * If on LoginScreen and already logged in, navigate to HomeScreen
+ * */
+export function authStateChanged2(
+  setIsSignedIn: Dispatch<SetStateAction<boolean>>
+) {
+  ourAuth.auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      setIsSignedIn(true);
+    }
+  });
+}
+
+/**
  * Authenticate new user and create new document using email and password
  * */
 export const emailPasswordCreateUser = async (
-  navigation: Navigation,
+  setIsSignedIn: Dispatch<SetStateAction<boolean>>,
   name: string,
   email: string,
   password: string
@@ -51,7 +69,8 @@ export const emailPasswordCreateUser = async (
         email
       );
       alert('Account successfully created!');
-      navigation.navigate(Screens.HomeScreen);
+      setIsSignedIn(true);
+      //navigation.navigate(Screens.HomeScreen);
     }
   } catch (error) {
     alert(error.code);
@@ -62,7 +81,7 @@ export const emailPasswordCreateUser = async (
  * Sign in using email and password
  * */
 export const emailPasswordSignIn = async (
-  navigation: Navigation,
+  setIsSignedIn: Dispatch<SetStateAction<boolean>>,
   email: string,
   password: string
 ): Promise<void> => {
@@ -71,7 +90,8 @@ export const emailPasswordSignIn = async (
   try {
     await ourAuth.signInWithEmailAndPassword(ourAuth.auth, email, password);
     if (ourAuth.auth.currentUser != null) {
-      navigation.navigate(Screens.HomeScreen);
+      //navigation.navigate(Screens.HomeScreen);
+      setIsSignedIn(true);
     }
   } catch (error) {
     alert(error.code);
@@ -82,7 +102,10 @@ export const emailPasswordSignIn = async (
  * Google Sign In (works only with Web, no mobile - for now?)
  * Determine whether logging in or new account creation is needed
  * */
-export const googleSignIn = async (navigation: Navigation): Promise<void> => {
+export const googleSignIn = async (
+  navigation: Navigation,
+  setIsSignedIn: Dispatch<SetStateAction<boolean>>
+): Promise<void> => {
   try {
     // a popup is used to display the Google Sign In
     const result = await ourAuth.signInWithPopup(
@@ -95,7 +118,8 @@ export const googleSignIn = async (navigation: Navigation): Promise<void> => {
       if (userDetails?.isNewUser) {
         navigation.navigate(Screens.WaiverScreen);
       } else {
-        navigation.navigate(Screens.HomeScreen);
+        //navigation.navigate(Screens.HomeScreen);
+        setIsSignedIn(true);
       }
     }
 
@@ -123,6 +147,11 @@ export const googleSignIn = async (navigation: Navigation): Promise<void> => {
     alert(error.code);
   }
 };
+
+/**
+ * Return true if the user is currently signed in, false if not
+ * */
+export const isUserSignedIn = (): boolean => ourAuth.auth.currentUser != null;
 
 /**
  * Sign out an authenticated user

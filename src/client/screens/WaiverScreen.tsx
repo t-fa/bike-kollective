@@ -10,6 +10,7 @@ import {
 import styles from '../styles/StyleSheet';
 import { agreeToWaiver } from '../firebase/authentication';
 import { WaiverScreenProps } from '../types/types';
+import { useAuth } from '../components/AuthContext';
 
 const waiverMessage = `I HEREBY ASSUME ALL OF THE RISKS OF PARTICIPATING IN ANY/ALL ACTIVITIES ASSOCIATED WITH\n "The Bike Kollective,"\n
 including by way of example and not limitation, any risks that may arise from negligence or carelessness on the part of the persons or entities being released, from dangerous or defective equipment or property owned, maintained, or controlled by them, or because of their possible liability without fault.\n
@@ -23,6 +24,7 @@ const { width } = Dimensions.get('window');
 
 const WaiverScreen: React.FC<WaiverScreenProps> = ({ navigation }) => {
   const [dimensions, setDimensions] = useState({ window, screen });
+  const { setIsSignedIn } = useAuth();
 
   useEffect(() => {
     const subscription = Dimensions.addEventListener(
@@ -49,7 +51,7 @@ const WaiverScreen: React.FC<WaiverScreenProps> = ({ navigation }) => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => {
-            agreeToWaiver(navigation);
+            agreeToWaiver(navigation, setIsSignedIn);
           }}
           style={styles.button}
         >

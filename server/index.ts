@@ -9,6 +9,7 @@ import {
   signInWithRedirect,
   getRedirectResult,
   getAuth,
+  fetchSignInMethodsForEmail,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
@@ -51,6 +52,7 @@ const ourAuth = {
   signInWithRedirect: signInWithRedirect,
   getRedirectResult: getRedirectResult,
   getAuth: getAuth,
+  fetchSignInMethodsForEmail: fetchSignInMethodsForEmail,
   createUserWithEmailAndPassword: createUserWithEmailAndPassword,
   signInWithEmailAndPassword: signInWithEmailAndPassword,
   signOut: signOut
