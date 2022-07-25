@@ -9,10 +9,12 @@ import {
   signInWithRedirect,
   getRedirectResult,
   getAuth,
+  fetchSignInMethodsForEmail,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  User
+  User,
+  Unsubscribe
 } from 'firebase/auth';
 import {
   getFirestore,
@@ -21,9 +23,11 @@ import {
   addDoc,
   getDoc,
   setDoc,
-  getDocs
+  getDocs,
+  onSnapshot,
+  clearIndexedDbPersistence
 } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes } from 'firebase/storage';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDRvToZeMmzwEj_6_ugenBxPvgtjVUZGVs',
@@ -51,6 +55,7 @@ const ourAuth = {
   signInWithRedirect: signInWithRedirect,
   getRedirectResult: getRedirectResult,
   getAuth: getAuth,
+  fetchSignInMethodsForEmail: fetchSignInMethodsForEmail,
   createUserWithEmailAndPassword: createUserWithEmailAndPassword,
   signInWithEmailAndPassword: signInWithEmailAndPassword,
   signOut: signOut
@@ -63,13 +68,16 @@ const ourFirestore = {
   addDoc: addDoc,
   getDoc: getDoc,
   setDoc: setDoc,
-  getDocs: getDocs
+  getDocs: getDocs,
+  onSnapShot: onSnapshot,
+  clearIndexedDbPersistence: clearIndexedDbPersistence
 };
 
 const ourStorage = {
   storage: storage,
   ref: ref,
-  uploadBytes: uploadBytes
+  uploadBytes: uploadBytes,
+  getDownloadURL: getDownloadURL
 };
 
 /*const app = express();
@@ -86,4 +94,4 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}...`);
 });*/
 
-export { ourAuth, ourFirestore, ourStorage, User };
+export { ourAuth, ourFirestore, ourStorage, User, Unsubscribe };
