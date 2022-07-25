@@ -154,7 +154,7 @@ const ReviewBikeForm: React.FC = () => {
               style={styles.addReview}
               onPress={() => props.handleSubmit()}
             >
-              <Text style={styles.ButtonText}>Write Reivew</Text>
+              <Text style={styles.ButtonText}>Write Review</Text>
             </TouchableOpacity>
           </View>
         )}

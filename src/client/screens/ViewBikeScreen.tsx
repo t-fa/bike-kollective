@@ -38,18 +38,12 @@ const ViewBikeScreen: React.FC = () => {
   });
 
   return (
-    <View style={styles.buttonContainer}>
+    <View style={styles.container}>
       <CurrentLocation />
-      <Text
-        style={{
-          fontSize: 20
-        }}
-      >
-        <View style={{ display: 'flex' }}>
-          <Text style={styles.title}>Nearby Bikes:</Text>
-        </View>
-        <View style={styles.container}>{bikeList}</View>
-      </Text>
+      <View style={{ display: 'flex' }}>
+        <Text style={styles.title}>Nearby Bikes:</Text>
+      </View>
+      {bikeList}
     </View>
   );
 };

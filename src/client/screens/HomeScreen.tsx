@@ -1,52 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   View,
   TouchableOpacity,
   KeyboardAvoidingView
 } from 'react-native';
-import { HomeScreenProps } from '../types/types';
+import { Bike, HomeScreenProps, Screens } from '../types/types';
 import styles from '../styles/StyleSheet';
+import { getBikeFromFirestore } from '../firebase/firestore';
 
-// TODO: remove back button from this screen and
-//       add a profile button/area where user can:
-//          log out and view their bikes (and whatever else)
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+  // TODO: attach this function to every bike in list?
+  const goToBikeDetailScreen = (bike: Bike) => {
+    navigation.navigate(Screens.BikeDetailScreen, bike);
+  };
+
+  const [testBike, setTestBike] = useState<Bike>({
+    comments: '',
+    currentLocation: undefined,
+    photo: '',
+    issues: '',
+    lockCombination: 0,
+    model: '',
+    owner: undefined,
+    currentlyCheckedOut: false,
+    rating: 0,
+    stolen: false
+  });
+
+  useEffect(() => {
+    const getAndSetBike = async () => {
+      setTestBike(await getBikeFromFirestore('4eXBUNqHKVUdSzFbziUW'));
+    };
+    getAndSetBike();
+  }, []);
+
   return (
-    <>
-      <KeyboardAvoidingView style={styles.container} behavior="padding">
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('AddBikeScreen')}
-          >
-            <Text style={styles.buttonText}>Add A Bike</Text>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
-
-      <KeyboardAvoidingView style={styles.container} behavior="padding">
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('ReviewBikeScreen')}
-          >
-            <Text style={styles.buttonText}>Review A Bike</Text>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
-
-      <KeyboardAvoidingView style={styles.container} behavior="padding">
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('ViewBikeScreen')}
-          >
-            <Text style={styles.buttonText}>View Nearby Bikes</Text>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
-    </>
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
+      {/* Remove later */}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.buttonOutline}
+          onPress={() => goToBikeDetailScreen(testBike)}
+        >
+          <Text style={styles.buttonOutlineText}>
+            Test: Go to details screen using a bike document
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 

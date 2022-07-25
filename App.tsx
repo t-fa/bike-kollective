@@ -1,64 +1,27 @@
 import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {AuthProvider} from "./src/client/components/AuthContext";
+import {Router} from "./src/client/components/Navigation";
+import {ourFirestore} from "./server";
+import {useEffect} from "react";
 
-import LoginScreen from './src/client/screens/LoginScreen';
-import RegisterScreen from './src/client/screens/RegisterScreen';
-import WaiverScreen from './src/client/screens/WaiverScreen';
-import HomeScreen from './src/client/screens/HomeScreen';
-import ViewBikeScreen from './src/client/screens/ViewBikeScreen';
-import AddBikeScreen from './src/client/screens/addBike';
-import ReviewBikeScreen from './src/client/screens/ReviewBike';
 
-export type RootStackParamList = {
-  LoginScreen: undefined;
-  RegisterScreen: undefined;
-  WaiverScreen: undefined;
-  HomeScreen: undefined;
-};
-
-const Stack = createNativeStackNavigator();
+// Want to add a screen? Go to Navigation.tsx and add the Stack.Screen there
 
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="LoginScreen"
-          component={LoginScreen}
-          options={{ title: 'The Bike Kollective' }}
-        />
-        <Stack.Screen
-          name="RegisterScreen"
-          component={RegisterScreen}
-          options={{ title: 'Register' }}
-        />
-        <Stack.Screen
-          name="WaiverScreen"
-          component={WaiverScreen}
-          options={{ title: 'Sign Accident Waiver' }}
-        />
-        <Stack.Screen
-          name="HomeScreen"
-          component={HomeScreen}
-          options={{ title: 'The Bike Kollective' }}
-        />
-        <Stack.Screen
-          name="AddBikeScreen"
-          component={AddBikeScreen}
-          options={{ title: 'Add Bike To System' }}
-        />
-        <Stack.Screen
-          name="ViewBikeScreen"
-          component={ViewBikeScreen}
-          options={{ title: 'View Nearby Bikes' }}
-        />
-        <Stack.Screen 
-          name="ReviewBikeScreen" 
-          component={ReviewBikeScreen} 
-          options={{ title: 'Review a bike' }} />
 
-      </Stack.Navigator>
-    </NavigationContainer>
+  // Firebase SDK caches documents locally, which can give false positives
+  // when checking for the existence of documents.
+  // Might be useful to clear the cache when testing:
+  useEffect(() => {
+    const clearLocalCache = async () => {
+      await ourFirestore.clearIndexedDbPersistence(ourFirestore.db);
+    }
+    clearLocalCache();
+  }, []);
+
+  return (
+    <AuthProvider>
+      <Router />
+    </AuthProvider>
   );
 }
