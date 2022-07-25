@@ -1,14 +1,13 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text } from 'react-native';
 import { BikeType } from './types';
 
-type Props = Pick<BikeType, 'location' | 'model' | 'photo'>;
+type Props = Pick<BikeType, 'location' | 'model'>;
 
-const BikeSummary: React.FC<Props> = ({ location, model, photo }) => {
+const BikeSummary: React.FC<Props> = ({ location, model }) => {
   return (
     <View>
       <Text>{model}</Text>
-      <Image source={{ uri: photo }} />
       <Text>Latitude: {location.latitude}</Text>
       <Text>Longitude: {location.longitude}</Text>
     </View>

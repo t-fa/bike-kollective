@@ -18,7 +18,9 @@ const ViewBikeScreen: React.FC = () => {
         ourFirestore.collection(ourFirestore.db, 'bikes')
       );
       querySnapshot.forEach((doc) => {
-        bikesArr.push(doc.data() as BikeType);
+        const bike = { ...doc.data() };
+        bike.id = doc.id;
+        bikesArr.push(bike as BikeType);
       });
 
       setBikes(bikesArr);
@@ -29,13 +31,9 @@ const ViewBikeScreen: React.FC = () => {
 
   const bikeList = bikes.map((bike) => {
     return (
-      <BikeSummary
-        // TODO: need to access unique ID from firestore
-        key={bike.lockCombination}
-        location={bike.location}
-        model={bike.model}
-        photo={bike.photo}
-      />
+      <View key={bike.id} style={styles.emptySpace}>
+        <BikeSummary location={bike.location} model={bike.model} />
+      </View>
     );
   });
 
@@ -47,8 +45,10 @@ const ViewBikeScreen: React.FC = () => {
           fontSize: 20
         }}
       >
-        Nearby Bikes:
-        {bikeList}
+        <View style={{ display: 'flex' }}>
+          <Text style={styles.title}>Nearby Bikes:</Text>
+        </View>
+        <View style={styles.container}>{bikeList}</View>
       </Text>
     </View>
   );

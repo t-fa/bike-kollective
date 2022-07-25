@@ -66,6 +66,13 @@ const styles = StyleSheet.create({
   emptySpace: {
     paddingHorizontal: 40,
     paddingVertical: 40
+  },
+  title: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 20,
+    fontSize: 20,
+    color: '#065C00'
   }
 });
 

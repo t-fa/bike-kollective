@@ -1,4 +1,5 @@
 export type BikeType = {
+  id?: string;
   comments: string;
   issues: string;
   location: Location;
