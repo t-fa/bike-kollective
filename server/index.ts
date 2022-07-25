@@ -13,7 +13,8 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  User
+  User,
+  Unsubscribe
 } from 'firebase/auth';
 import {
   getFirestore,
@@ -22,7 +23,9 @@ import {
   addDoc,
   getDoc,
   setDoc,
-  getDocs
+  getDocs,
+  onSnapshot,
+  clearIndexedDbPersistence
 } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
@@ -65,7 +68,9 @@ const ourFirestore = {
   addDoc: addDoc,
   getDoc: getDoc,
   setDoc: setDoc,
-  getDocs: getDocs
+  getDocs: getDocs,
+  onSnapShot: onSnapshot,
+  clearIndexedDbPersistence: clearIndexedDbPersistence
 };
 
 const ourStorage = {
@@ -89,4 +94,4 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}...`);
 });*/
 
-export { ourAuth, ourFirestore, ourStorage, User };
+export { ourAuth, ourFirestore, ourStorage, User, Unsubscribe };

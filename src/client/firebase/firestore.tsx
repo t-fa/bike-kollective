@@ -40,11 +40,20 @@ export const createDocumentFromAuthenticatedUser = async (
 /**
  * Check Firestore for existence of document, given the userId.
  * */
-/*const documentExists = async (userId: string): Promise<boolean> => {
-  const documentReference = ourFirestore.doc(ourFirestore.db, '/users', userId);
-  const documentSnapshot = await ourFirestore.getDoc(documentReference);
-  return documentSnapshot.exists();
-};*/
+export const documentExists = async (
+  userId: string | undefined
+): Promise<boolean> => {
+  if (userId) {
+    const documentReference = ourFirestore.doc(
+      ourFirestore.db,
+      '/users',
+      userId
+    );
+    const documentSnapshot = await ourFirestore.getDoc(documentReference);
+    return documentSnapshot.exists();
+  }
+  return false;
+};
 
 /**
  * Return a Bike object, given the bike document's Firestore ID

@@ -3,9 +3,10 @@ import React, {
   Dispatch,
   SetStateAction,
   useContext,
+  useEffect,
   useState
 } from 'react';
-import { isUserSignedIn } from '../firebase/authentication';
+import { ourAuth, Unsubscribe } from '../../../server';
 
 type AuthContextData = {
   isSignedIn: boolean;
@@ -15,8 +16,24 @@ type AuthContextData = {
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider: React.FC = ({ children }) => {
-  // is user signed in via Firebase?
-  const [isSignedIn, setIsSignedIn] = useState<boolean>(isUserSignedIn());
+  // use this state throughout the app, to navigate
+  const [isSignedIn, setIsSignedIn] = useState<boolean>(false);
+
+  // When app loads, see if user is logged in and unsubscribe immediately.
+  // It has to be handled this way since auth.currentUser isn't by the time this runs
+  useEffect(() => {
+    let unsubscribe: Unsubscribe;
+
+    const isAlreadySignedIn = async () => {
+      unsubscribe = ourAuth.auth.onAuthStateChanged(async (user) => {
+        unsubscribe();
+        if (user) {
+          setIsSignedIn(true);
+        }
+      });
+    };
+    isAlreadySignedIn();
+  }, []);
 
   // To navigate from authentication screens to the main screens,
   // this state needs to be updated. Once it is,

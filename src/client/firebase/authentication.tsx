@@ -1,6 +1,9 @@
 import { ourAuth } from '../../../server';
 import { Navigation, Screens } from '../types/types';
-import { createDocumentFromAuthenticatedUser } from './firestore';
+import {
+  createDocumentFromAuthenticatedUser,
+  documentExists
+} from './firestore';
 import { Dispatch, SetStateAction } from 'react';
 
 /**
@@ -17,7 +20,6 @@ export const agreeToWaiver = async (
     await createDocumentFromAuthenticatedUser(currentUser, true);
     alert('Account successfully created!');
     setIsSignedIn(true);
-    //navigation.navigate(Screens.HomeScreen);
   } else {
     navigation.navigate(Screens.RegisterScreen);
   }
@@ -26,26 +28,13 @@ export const agreeToWaiver = async (
 /**
  * If on LoginScreen and already logged in, navigate to HomeScreen
  * */
-export function authStateChanged(navigation: Navigation) {
+/*export function authStateChanged(navigation: Navigation) {
   ourAuth.auth.onAuthStateChanged(async (user) => {
     if (user) {
       navigation.navigate(Screens.HomeScreen);
     }
   });
-}
-
-/**
- * If on LoginScreen and already logged in, navigate to HomeScreen
- * */
-export function authStateChanged2(
-  setIsSignedIn: Dispatch<SetStateAction<boolean>>
-) {
-  ourAuth.auth.onAuthStateChanged(async (user) => {
-    if (user) {
-      setIsSignedIn(true);
-    }
-  });
-}
+}*/
 
 /**
  * Authenticate new user and create new document using email and password
@@ -70,7 +59,6 @@ export const emailPasswordCreateUser = async (
       );
       alert('Account successfully created!');
       setIsSignedIn(true);
-      //navigation.navigate(Screens.HomeScreen);
     }
   } catch (error) {
     alert(error.code);
@@ -90,7 +78,7 @@ export const emailPasswordSignIn = async (
   try {
     await ourAuth.signInWithEmailAndPassword(ourAuth.auth, email, password);
     if (ourAuth.auth.currentUser != null) {
-      //navigation.navigate(Screens.HomeScreen);
+      // go to HomeScreen
       setIsSignedIn(true);
     }
   } catch (error) {
@@ -115,34 +103,17 @@ export const googleSignIn = async (
     if (result) {
       /* Can get profile picture, among other things, from userDetails */
       const userDetails = ourAuth.getAdditionalUserInfo(result);
-      if (userDetails?.isNewUser) {
+
+      if (
+        userDetails?.isNewUser ||
+        !(await documentExists(ourAuth.auth.currentUser?.uid))
+      ) {
         navigation.navigate(Screens.WaiverScreen);
       } else {
-        //navigation.navigate(Screens.HomeScreen);
+        // go to HomeScreen
         setIsSignedIn(true);
       }
     }
-
-    /* This method would redirect to a new screen for the Google Sign In
-     *  and return, which would make more sense in mobile.
-     *  However, getting the redirect result doesn't work. */
-    /*
-    console.log("Before signInWithRedirect");
-    await ourAuth.signInWithRedirect(ourAuth.auth, ourAuth.provider);
-    console.log("After signInWithRedirect");
-
-    const result = await ourAuth.getRedirectResult(ourAuth.auth);
-    console.log("After getRedirectResult", result);
-
-    if (result) {
-      const userDetails = ourAuth.getAdditionalUserInfo(result);
-      if (userDetails?.isNewUser) {
-        navigation.navigate(Screens.WaiverScreen);
-      } else {
-        navigation.navigate(Screens.HomeScreen);
-      }
-    }
-    */
   } catch (error) {
     alert(error.code);
   }
