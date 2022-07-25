@@ -120,17 +120,20 @@ export const googleSignIn = async (
 };
 
 /**
- * Return true if the user is currently signed in, false if not
+ * Return true if the user is currently signed in, false if not (doesn't work well)
  * */
 export const isUserSignedIn = (): boolean => ourAuth.auth.currentUser != null;
 
 /**
- * Sign out an authenticated user
+ * Sign out an authenticated user and return to LoginScreen
  * */
-export const userSignOut = async (): Promise<void> => {
+export const userSignOut = async (
+  setIsSignedIn: Dispatch<SetStateAction<boolean>>
+): Promise<void> => {
   try {
     await ourAuth.signOut(ourAuth.auth);
     alert('Successfully signed out');
+    setIsSignedIn(false);
   } catch (error) {
     alert(error.code);
   }

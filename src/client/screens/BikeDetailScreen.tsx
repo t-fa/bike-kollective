@@ -18,6 +18,8 @@ const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({
     getUrl();
   }, []);
 
+  // TODO: add back button, or some other way to leave
+
   return (
     <View style={styles.container}>
       <Text>Model: {bike.model}</Text>

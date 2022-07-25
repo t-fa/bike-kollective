@@ -22,6 +22,13 @@ export enum Screens {
   ReviewBikeScreen = 'ReviewBikeScreen'
 }
 
+export enum Tabs {
+  HomeTab = 'HomeTab',
+  AddBikeTab = 'AddBikeTab',
+  ReviewBikeTab = 'ReviewBikeTab',
+  ProfileTab = 'ProfileTab'
+}
+
 export type HomeScreenProps = NativeStackScreenProps<
   RootStackParamList,
   Screens.HomeScreen

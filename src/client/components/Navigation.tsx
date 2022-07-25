@@ -1,5 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from './AuthContext';
+import { Screens, Tabs } from '../types/types';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import WaiverScreen from '../screens/WaiverScreen';
@@ -8,13 +13,9 @@ import AddBikeScreen from '../screens/addBike';
 import ViewBikeScreen from '../screens/ViewBikeScreen';
 import ReviewBikeScreen from '../screens/ReviewBike';
 import BikeDetailScreen from '../screens/BikeDetailScreen';
-import { NavigationContainer } from '@react-navigation/native';
-import { useAuth } from './AuthContext';
-import { Screens } from '../types/types';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const AuthStack = createNativeStackNavigator();
-
 export const AuthScreens = () => {
   return (
     <AuthStack.Navigator>
@@ -37,48 +38,16 @@ export const AuthScreens = () => {
   );
 };
 
+// TODO: Figure out what exactly should go into each stack and tab here onward
+
 const MainStack = createNativeStackNavigator();
-
-/*export const MainScreens = () => {
-  return (
-    <MainStack.Navigator>
-      <MainStack.Screen
-        name={Screens.HomeScreen}
-        component={HomeScreen}
-        options={{ title: 'The Bike Kollective' }}
-      />
-      <MainStack.Screen
-        name={Screens.AddBikeScreen}
-        component={AddBikeScreen}
-        options={{ title: 'Add Bike To System' }}
-      />
-      <MainStack.Screen
-        name={Screens.ViewBikeScreen}
-        component={ViewBikeScreen}
-        options={{ title: 'View Nearby Bikes' }}
-      />
-      <MainStack.Screen
-        name={Screens.ReviewBikeScreen}
-        component={ReviewBikeScreen}
-        options={{ title: 'Review a bike' }}
-      />
-
-      <MainStack.Screen
-        name={Screens.BikeDetailScreen}
-        component={BikeDetailScreen}
-        options={{ title: 'Bike Details' }}
-      />
-    </MainStack.Navigator>
-  );
-};*/
-
 export const MainScreens = () => {
   return (
     <MainStack.Navigator>
       <MainStack.Screen
         name={Screens.HomeScreen}
         component={HomeScreen}
-        options={{ title: 'The Bike Kollective' }}
+        options={{ headerShown: false }}
       />
       {/*<MainStack.Screen
         name={Screens.AddBikeScreen}
@@ -88,54 +57,90 @@ export const MainScreens = () => {
       <MainStack.Screen
         name={Screens.ViewBikeScreen}
         component={ViewBikeScreen}
-        options={{ title: 'View Nearby Bikes' }}
+        options={{ headerShown: false }}
       />
       {/*<MainStack.Screen
         name={Screens.ReviewBikeScreen}
         component={ReviewBikeScreen}
         options={{ title: 'Review a bike' }}
       />*/}
-
       <MainStack.Screen
         name={Screens.BikeDetailScreen}
         component={BikeDetailScreen}
-        options={{ title: 'Bike Details' }}
+        options={{ headerShown: false }}
       />
     </MainStack.Navigator>
   );
 };
 
-const RandomStack = createNativeStackNavigator();
-export const RandomScreens = () => {
+const AddBikeStack = createNativeStackNavigator();
+export const AddBikeScreenStack = () => {
   return (
-    <RandomStack.Navigator>
-      <RandomStack.Screen
+    <AddBikeStack.Navigator>
+      <AddBikeStack.Screen
         name={Screens.AddBikeScreen}
         component={AddBikeScreen}
-        options={{ title: 'Add Bike To System' }}
+        options={{ headerShown: false }}
       />
-      <RandomStack.Screen
+    </AddBikeStack.Navigator>
+  );
+};
+
+const ReviewBikeStack = createNativeStackNavigator();
+export const ReviewBikeScreenStack = () => {
+  return (
+    <ReviewBikeStack.Navigator>
+      <ReviewBikeStack.Screen
         name={Screens.ReviewBikeScreen}
         component={ReviewBikeScreen}
-        options={{ title: 'Review a bike' }}
+        options={{ headerShown: false }}
       />
-    </RandomStack.Navigator>
+    </ReviewBikeStack.Navigator>
   );
 };
 
 const Tab = createMaterialTopTabNavigator();
 export const TopTabs = () => {
   return (
-    <Tab.Navigator backBehavior="initialRoute">
+    <Tab.Navigator
+      backBehavior="initialRoute"
+      screenOptions={() => ({
+        tabBarActiveTintColor: 'tomato',
+        tabBarInactiveTintColor: 'gray',
+        tabBarLabelStyle: { paddingTop: 10 }
+      })}
+    >
       <Tab.Screen
-        name={'Home Tab'}
+        name={Tabs.HomeTab}
         component={MainScreens}
-        options={{ title: 'The Bike Kollective' }}
+        options={{
+          title: 'Bikes Near You',
+          tabBarIcon: () => <Ionicons name={'bicycle'} size={30} />
+        }}
       />
       <Tab.Screen
-        name={'Add Bike Tab'}
-        component={RandomScreens}
-        options={{ title: 'Add Bike To System' }}
+        name={Tabs.AddBikeTab}
+        component={AddBikeScreenStack}
+        options={{
+          title: 'Add Bike To System',
+          tabBarIcon: () => <Ionicons name={'add-circle'} size={30} />
+        }}
+      />
+      <Tab.Screen
+        name={Tabs.ReviewBikeTab}
+        component={ReviewBikeScreenStack}
+        options={{
+          title: 'Review Bike',
+          tabBarIcon: () => <Ionicons name={'ios-star-half-sharp'} size={30} />
+        }}
+      />
+      <Tab.Screen
+        name={Tabs.ProfileTab}
+        component={ProfileScreen}
+        options={{
+          title: 'Profile',
+          tabBarIcon: () => <Ionicons name={'md-person-circle'} size={30} />
+        }}
       />
     </Tab.Navigator>
   );
