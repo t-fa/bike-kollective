@@ -1,6 +1,3 @@
-// import express, {Request, Response} from "express";
-// import bodyParser from "body-parser";
-
 import { initializeApp } from 'firebase/app';
 import {
   GoogleAuthProvider,
@@ -79,19 +76,5 @@ const ourStorage = {
   uploadBytes: uploadBytes,
   getDownloadURL: getDownloadURL
 };
-
-/*const app = express();
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-const PORT = process.env.PORT || 8080;
-
-app.get('/', (req: Request, res: Response) => {
-    res.send('hello');
-})
-
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}...`);
-});*/
 
 export { ourAuth, ourFirestore, ourStorage, User, Unsubscribe };

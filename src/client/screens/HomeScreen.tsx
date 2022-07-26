@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import { Bike, HomeScreenProps, Screens } from '../types/types';
 import styles from '../styles/StyleSheet';
-import NavigateButton from '../components/NavigateButton';
 import { getBikeFromFirestore } from '../firebase/firestore';
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
@@ -38,12 +37,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <NavigateButton
-        navigation={navigation}
-        screenName={Screens.ViewBikeScreen}
-        buttonText={'View Nearby Bikes'}
-      />
-
       {/* Remove later */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity

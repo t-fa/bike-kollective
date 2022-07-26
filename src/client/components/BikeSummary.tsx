@@ -1,16 +1,15 @@
 import React from 'react';
-
 import { View, Text } from 'react-native';
+import { BikeType } from './types';
 
-interface Props {
-  name: string;
-  // TODO get props once firebase is available
-}
+type Props = Pick<BikeType, 'location' | 'model'>;
 
-const BikeSummary: React.FC<Props> = ({ name }) => {
+const BikeSummary: React.FC<Props> = ({ location, model }) => {
   return (
     <View>
-      <Text>{name}</Text>
+      <Text>{model}</Text>
+      <Text>Latitude: {location.latitude}</Text>
+      <Text>Longitude: {location.longitude}</Text>
     </View>
   );
 };

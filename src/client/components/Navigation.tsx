@@ -112,7 +112,7 @@ export const TopTabs = () => {
     >
       <Tab.Screen
         name={Tabs.HomeTab}
-        component={MainScreens}
+        component={ViewBikeScreen}
         options={{
           title: 'Bikes Near You',
           tabBarIcon: () => <Ionicons name={'bicycle'} size={30} />
