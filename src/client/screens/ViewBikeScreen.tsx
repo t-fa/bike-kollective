@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import BikeSummary from '../components/BikeSummary';
 import styles from '../styles/StyleSheet';
-import CurrentLocation from '../components/CurrentLocation';
 import { ourFirestore } from '../../server';
 import { BikeType } from '../components/types';
 
@@ -39,7 +38,6 @@ const ViewBikeScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <CurrentLocation />
       <View style={{ display: 'flex' }}>
         <Text style={styles.title}>Nearby Bikes:</Text>
       </View>
