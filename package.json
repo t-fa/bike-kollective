@@ -64,5 +64,8 @@
   "resolutions": {
     "expo-camera/react": "16.14.0"
   },
+  "engines": {
+    "node": "16.x"
+  },
   "private": true
 }

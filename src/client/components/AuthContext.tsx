@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useState
 } from 'react';
-import { ourAuth, Unsubscribe } from '../../../server';
+import { ourAuth, Unsubscribe } from '../../server';
 
 type AuthContextData = {
   isSignedIn: boolean;

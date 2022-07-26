@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { Formik, FormikProps, FormikValues } from 'formik';
 import * as Yup from 'yup';
-import { ourAuth, ourFirestore, ourStorage } from '../../../server';
+import { ourAuth, ourFirestore, ourStorage } from '../../server';
 
 const AddBikeForm: React.FC = ({ formData, updateForm, bikePhotoUri }) => {
   // Validation

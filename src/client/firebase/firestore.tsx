@@ -1,4 +1,4 @@
-import { ourFirestore, User as FirebaseUser } from '../../../server';
+import { ourFirestore, User as FirebaseUser } from '../../server';
 import { Bike, User } from '../types/types';
 
 /**

@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 import BikeSummary from '../components/BikeSummary';
 import styles from '../styles/StyleSheet';
 import CurrentLocation from '../components/CurrentLocation';
-import { ourFirestore } from '../../../server';
+import { ourFirestore } from '../../server';
 import { BikeType } from '../components/types';
 
 // https://firebase.google.com/docs/database/web/read-and-write#read_data_once
