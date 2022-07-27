@@ -1,4 +1,4 @@
-import { ourAuth } from '../../../server';
+import { ourAuth } from '../../server';
 import { Navigation, Screens } from '../types/types';
 import {
   createDocumentFromAuthenticatedUser,

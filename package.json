@@ -11,7 +11,8 @@
     "type-check": "tsc --noemit",
     "lint": "eslint --max-warnings=0 ./src --fix",
     "pretty": "prettier --write \"./src/**/*.{ts,tsx}\"",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "remove-web": "rm -rf node_modules/expo-camera/node_modules/react"
   },
   "lint-staged": {
     "./src/**/*.{ts,tsx}": [
@@ -63,6 +64,9 @@
   },
   "resolutions": {
     "expo-camera/react": "16.14.0"
+  },
+  "engines": {
+    "node": "16.x"
   },
   "private": true
 }

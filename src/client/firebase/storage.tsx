@@ -1,4 +1,4 @@
-import { ourStorage } from '../../../server';
+import { ourStorage } from '../../server';
 
 /**
  * Return image url from Storage, given the image's path

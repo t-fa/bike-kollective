@@ -10,7 +10,7 @@ import { Formik, FormikProps, FormikValues } from 'formik';
 import * as Yup from 'yup';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { FontAwesome } from '@expo/vector-icons';
-import { ourAuth, ourFirestore } from '../../../server';
+import { ourAuth, ourFirestore } from '../../server';
 
 const ReviewBikeForm: React.FC = () => {
   // Picker Data

@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { Camera } from 'expo-camera';
 import { Platform } from 'expo-modules-core';
-import { ourAuth } from '../../../server';
+import { ourAuth } from '../../server';
 let camera: Camera;
 
 const AddBikeScreen: React.FC = () => {

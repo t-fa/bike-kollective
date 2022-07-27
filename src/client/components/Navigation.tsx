@@ -14,6 +14,8 @@ import ViewBikeScreen from '../screens/ViewBikeScreen';
 import ReviewBikeScreen from '../screens/ReviewBike';
 import BikeDetailScreen from '../screens/BikeDetailScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import CurrentLocation from './CurrentLocation';
+import { View } from 'react-native';
 
 const AuthStack = createNativeStackNavigator();
 export const AuthScreens = () => {
@@ -155,6 +157,11 @@ export const Router = () => {
           then navigate to Main part of app */}
       {/*{isSignedIn ? <MainScreens /> : <AuthScreens />}*/}
       {isSignedIn ? <TopTabs /> : <AuthScreens />}
+      <View
+        style={{ display: 'flex', alignItems: 'center', paddingBottom: '50px' }}
+      >
+        <CurrentLocation />
+      </View>
     </NavigationContainer>
   );
 };

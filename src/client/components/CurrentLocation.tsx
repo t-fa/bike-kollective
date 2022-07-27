@@ -19,7 +19,6 @@ const CurrentLocation: React.FC = () => {
       const loc = await Location.getCurrentPositionAsync({});
       setLocation(loc);
       setLoading(false);
-      console.log(loc);
     })();
   }, []);
 

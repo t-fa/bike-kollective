@@ -8,9 +8,12 @@ import {
 } from 'react-native';
 import { Formik, FormikProps, FormikValues } from 'formik';
 import * as Yup from 'yup';
-import { ourAuth, ourFirestore, ourStorage } from '../../../server';
+import { ourAuth, ourFirestore, ourStorage } from '../../server';
+import * as Location from 'expo-location';
 
 const AddBikeForm: React.FC = ({ formData, updateForm, bikePhotoUri }) => {
+  const [location, setLocation] = React.useState<Location.LocationObject>();
+
   // Validation
   const validate = Yup.object({
     model: Yup.string()
@@ -18,9 +21,21 @@ const AddBikeForm: React.FC = ({ formData, updateForm, bikePhotoUri }) => {
       .required('Required'),
     comments: Yup.string().max(200, 'Must be 200 characters or less'),
     issues: Yup.string().max(200, 'Must be 20 characters or less'),
-    location: Yup.string().required('Required'),
+    // location: Yup.string().required('Required'),
     lockCombination: Yup.string().required('Required')
   });
+
+  React.useEffect(() => {
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        return;
+      }
+
+      const loc = await Location.getCurrentPositionAsync({});
+      setLocation(loc);
+    })();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -44,6 +59,7 @@ const AddBikeForm: React.FC = ({ formData, updateForm, bikePhotoUri }) => {
           const bytes = await img.blob();
 
           values.photo = pictureLocation;
+          values.location = location;
 
           const pictureReference = ourStorage.ref(
             ourStorage.storage,
@@ -66,7 +82,7 @@ const AddBikeForm: React.FC = ({ formData, updateForm, bikePhotoUri }) => {
             (formData.model = ''),
               (formData.comments = ''),
               (formData.issues = ''),
-              (formData.location = ''),
+              // (formData.location = ''),
               (formData.lockCombination = ''),
               (formData.photoLocation = ''),
               formData.photo;
@@ -75,7 +91,7 @@ const AddBikeForm: React.FC = ({ formData, updateForm, bikePhotoUri }) => {
             model: '',
             comments: '',
             issues: '',
-            location: '',
+            // location: '',
             lockCombination: '',
             photoLocation: '',
             user: ourAuth.auth.currentUser?.uid,
@@ -135,7 +151,7 @@ const AddBikeForm: React.FC = ({ formData, updateForm, bikePhotoUri }) => {
             </Text>
 
             {/* Location */}
-            <TextInput
+            {/* <TextInput
               style={styles.input}
               placeholder="Current Location of bike"
               onChangeText={props.handleChange('location')}
@@ -144,10 +160,10 @@ const AddBikeForm: React.FC = ({ formData, updateForm, bikePhotoUri }) => {
                 updateForm(props.values);
                 props.handleBlur('location');
               }}
-            ></TextInput>
-            <Text style={styles.errors}>
+            ></TextInput> */}
+            {/* <Text style={styles.errors}>
               {props.touched.location && props.errors.location}
-            </Text>
+            </Text> */}
 
             {/* Lock Combo */}
             <TextInput
