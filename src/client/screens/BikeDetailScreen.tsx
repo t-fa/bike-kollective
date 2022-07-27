@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, Button, Image } from 'react-native';
-import { BikeDetailScreenProps } from '../types/types';
+import { Text, View, Button, Image, FlatList } from 'react-native';
+import { BikeDetailScreenProps, Issue } from '../types/types';
 import { getBikeImageUrl } from '../firebase/storage';
 import styles from '../styles/StyleSheet';
 
@@ -8,14 +8,35 @@ const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({
   /*navigation,*/ route
 }) => {
   const [imageUrl, setImageUrl] = useState<string>('');
-  const bike = route.params;
-  console.log(bike);
+  const bike = route.params.bike;
+  const reviews = route.params.review;
+  const [rating, setRating] = useState<number>(0);
+  const [issues, setIssues] = useState<Issue[]>([]);
 
   useEffect(() => {
     const getUrl = async () => {
       setImageUrl(await getBikeImageUrl(bike.photo));
     };
+    const calculateRating = () => {
+      let totalRating = 0;
+      const issuesList: Issue[] = [];
+      reviews.map((review, index) => {
+        console.log('test', index);
+        totalRating += parseFloat(review.rating);
+        issuesList.push({
+          user: review.reviewer + '_' + index.toString(),
+          comments: review.comments,
+          bikeId: review.id + '_' + index.toString(),
+          issueId: review.reviewId
+        });
+        console.log(issuesList);
+      });
+      setRating(Number((totalRating / reviews.length).toFixed(1)));
+      setIssues(issuesList);
+    };
+
     getUrl();
+    calculateRating();
   }, []);
 
   // TODO: add back button, or some other way to leave
@@ -24,9 +45,26 @@ const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({
     <View style={styles.container}>
       <Text>Model: {bike.model}</Text>
       <Text>Current Location: {bike.currentLocation}</Text>
-      <Text>Rating: {bike.rating} </Text>
+      <Text>Average rating: {rating} star(s)</Text>
       <Text>Comments: {bike.comments}</Text>
-      <Text>Issues: {bike.issues}</Text>
+      <Text>Reviews and Issues:</Text>
+      <FlatList
+        data={issues}
+        renderItem={({ item }) => (
+          <View
+            style={{ borderWidth: 1, borderColor: 'black', marginBottom: 5 }}
+          >
+            <>
+              <Text style={styles.flatListItem}>Reviewer: {item.user}</Text>
+              <Text style={styles.flatListItem}>Review: {item.comments}</Text>
+              <Button
+                title="Update"
+                onPress={() => console.log(item.issueId)}
+              ></Button>
+            </>
+          </View>
+        )}
+      ></FlatList>
       <Image
         style={{ width: 200, height: 200 }}
         source={{ uri: imageUrl }}

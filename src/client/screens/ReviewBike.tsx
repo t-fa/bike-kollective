@@ -8,7 +8,16 @@ import {
 } from 'react-native';
 import ReviewBikeForm from '../components/ReviewBikeForm';
 import { Platform } from 'expo-modules-core';
+
 const ReviewBikeScreen: React.FC = () => {
+  const [selectedBikeId, setSelectedBikeId] = React.useState('');
+
+  // Sets selected Bike Id
+  const updateSelectedBike = (selectedBike) => {
+    setSelectedBikeId(selectedBike);
+    console.log(selectedBikeId);
+  };
+
   return (
     <TouchableWithoutFeedback
       onPress={() => {
@@ -18,8 +27,8 @@ const ReviewBikeScreen: React.FC = () => {
       }}
     >
       <View style={styles.container}>
-        <Text style={styles.title}>Submit a Bike Reivew</Text>
-        <ReviewBikeForm></ReviewBikeForm>
+        <Text style={styles.title}>Submit a Review or Issue</Text>
+        <ReviewBikeForm selectedBike={updateSelectedBike}></ReviewBikeForm>
       </View>
     </TouchableWithoutFeedback>
   );

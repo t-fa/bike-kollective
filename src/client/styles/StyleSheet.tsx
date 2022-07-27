@@ -66,6 +66,11 @@ const styles = StyleSheet.create({
   emptySpace: {
     paddingHorizontal: 40,
     paddingVertical: 40
+  },
+  flatListItem: {
+    marginTop: 1,
+    paddingTop: 1,
+    paddingHorizontal: 5
   }
 });
 

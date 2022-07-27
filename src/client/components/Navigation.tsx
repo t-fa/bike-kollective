@@ -130,7 +130,7 @@ export const TopTabs = () => {
         name={Tabs.ReviewBikeTab}
         component={ReviewBikeScreenStack}
         options={{
-          title: 'Review Bike',
+          title: 'Review or Report an Issue with a Bike',
           tabBarIcon: () => <Ionicons name={'ios-star-half-sharp'} size={30} />
         }}
       />

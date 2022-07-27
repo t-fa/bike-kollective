@@ -12,7 +12,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { FontAwesome } from '@expo/vector-icons';
 import { ourAuth, ourFirestore } from '../../../server';
 
-const ReviewBikeForm: React.FC = () => {
+const ReviewBikeForm: React.FC = ({ selectedBike }) => {
   // Picker Data
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState('');
@@ -62,6 +62,7 @@ const ReviewBikeForm: React.FC = () => {
     const querySnapshot = await ourFirestore.getDocs(
       ourFirestore.collection(ourFirestore.db, 'bikes')
     );
+
     // Loop through response
     querySnapshot.forEach((doc) => {
       // Add to array
@@ -96,7 +97,7 @@ const ReviewBikeForm: React.FC = () => {
           alert('Review Added');
 
           // Resets form
-          setValue('Select a bike to review...');
+          setValue('Select a bike...');
           resetForm();
         }}
       >
@@ -111,12 +112,15 @@ const ReviewBikeForm: React.FC = () => {
               setValue={setValue}
               onChangeValue={(value) => {
                 props.values.id = value;
+                selectedBike(props.values.id);
                 props.handleChange('id');
               }}
               items={items}
               setItems={setItems}
-              onBlur={props.handleBlur('id')}
-              placeholder={'Select a bike to review...'}
+              onBlur={() => {
+                props.handleBlur('id');
+              }}
+              placeholder={'Select a bike...'}
               containerStyle={{ height: 40 }}
             />
             <Text style={styles.errors}>
@@ -127,7 +131,7 @@ const ReviewBikeForm: React.FC = () => {
             <TextInput
               style={styles.input}
               multiline
-              placeholder="Comments..."
+              placeholder="Comments/Issues..."
               onChangeText={props.handleChange('comments')}
               value={props.values.comments}
               onBlur={props.handleBlur('comments')}

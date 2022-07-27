@@ -1,4 +1,5 @@
 import { ourFirestore, User as FirebaseUser } from '../../../server';
+import { QuerySnapshot } from '../../../server/node_modules/@firebase/firestore/dist';
 import { Bike, User } from '../types/types';
 
 /**
@@ -77,6 +78,18 @@ const getDocumentById = async (collection: string, documentId: string) => {
   );
 };
 
+/**
+ * Get Review for Bike, given the bikes document's Firestore ID
+ */
+export const getReviwsFromFirestore = async (
+  bikeId: string
+): Promise<QuerySnapshot> => {
+  const q = ourFirestore.query(
+    ourFirestore.collection(ourFirestore.db, 'reviews'),
+    ourFirestore.where('id', '==', bikeId)
+  );
+  return await ourFirestore.getDocs(q);
+};
 /*const getBikeCollection = async () => {
     return await ourFirestore.getDocs(
         ourFirestore.collection(ourFirestore.db, 'bikes'));
