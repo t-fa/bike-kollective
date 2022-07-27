@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import ReviewBikeForm from '../components/ReviewBikeForm';
 import { Platform } from 'expo-modules-core';
+
 const ReviewBikeScreen: React.FC = () => {
   return (
     <TouchableWithoutFeedback
@@ -18,7 +19,7 @@ const ReviewBikeScreen: React.FC = () => {
       }}
     >
       <View style={styles.container}>
-        <Text style={styles.title}>Submit a Bike Reivew</Text>
+        <Text style={styles.title}>Submit a Review or Issue</Text>
         <ReviewBikeForm></ReviewBikeForm>
       </View>
     </TouchableWithoutFeedback>

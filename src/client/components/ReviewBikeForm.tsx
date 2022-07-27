@@ -62,6 +62,7 @@ const ReviewBikeForm: React.FC = () => {
     const querySnapshot = await ourFirestore.getDocs(
       ourFirestore.collection(ourFirestore.db, 'bikes')
     );
+
     // Loop through response
     querySnapshot.forEach((doc) => {
       // Add to array
@@ -96,7 +97,7 @@ const ReviewBikeForm: React.FC = () => {
           alert('Review Added');
 
           // Resets form
-          setValue('Select a bike to review...');
+          setValue('Select a bike...');
           resetForm();
         }}
       >
@@ -115,8 +116,10 @@ const ReviewBikeForm: React.FC = () => {
               }}
               items={items}
               setItems={setItems}
-              onBlur={props.handleBlur('id')}
-              placeholder={'Select a bike to review...'}
+              onBlur={() => {
+                props.handleBlur('id');
+              }}
+              placeholder={'Select a bike...'}
               containerStyle={{ height: 40 }}
             />
             <Text style={styles.errors}>
@@ -127,7 +130,7 @@ const ReviewBikeForm: React.FC = () => {
             <TextInput
               style={styles.input}
               multiline
-              placeholder="Comments..."
+              placeholder="Comments/Issues..."
               onChangeText={props.handleChange('comments')}
               value={props.values.comments}
               onBlur={props.handleBlur('comments')}
