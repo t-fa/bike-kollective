@@ -73,6 +73,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 20,
     color: '#065C00'
+  },
+  flatListItem: {
+    marginTop: 1,
+    paddingTop: 1,
+    paddingHorizontal: 5
   }
 });
 

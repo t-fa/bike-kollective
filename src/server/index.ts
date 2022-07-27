@@ -22,7 +22,9 @@ import {
   setDoc,
   getDocs,
   onSnapshot,
-  clearIndexedDbPersistence
+  clearIndexedDbPersistence,
+  query,
+  where
 } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
@@ -67,7 +69,9 @@ const ourFirestore = {
   setDoc: setDoc,
   getDocs: getDocs,
   onSnapShot: onSnapshot,
-  clearIndexedDbPersistence: clearIndexedDbPersistence
+  clearIndexedDbPersistence: clearIndexedDbPersistence,
+  query: query,
+  where: where
 };
 
 const ourStorage = {

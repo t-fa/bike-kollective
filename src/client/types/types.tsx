@@ -6,9 +6,9 @@ export type RootStackParamList = {
   WaiverScreen: undefined;
   HomeScreen: undefined;
   AddBikeScreen: undefined;
-  BikeDetailScreen: Bike;
+  BikeDetailScreen: { bike: Bike; review: Review[] };
   ViewBikeScreen: undefined;
-  ReviewBikeScreen: undefined;
+  ReviewBikeScreen: Review;
 };
 
 export enum Screens {
@@ -84,6 +84,7 @@ export type User = {
 };
 
 export type Bike = {
+  id: string;
   owner: User | undefined;
   model: string;
   rating: number;
@@ -94,4 +95,19 @@ export type Bike = {
   currentlyCheckedOut: boolean;
   lockCombination: number;
   stolen: boolean;
+};
+
+export type Review = {
+  comments: string;
+  rating: string;
+  reviewer: string;
+  id: string;
+  reviewId: string;
+};
+
+export type Issue = {
+  user: string;
+  comments: string;
+  bikeId: string;
+  issueId: string;
 };
