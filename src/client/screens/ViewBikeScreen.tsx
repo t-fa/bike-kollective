@@ -31,7 +31,11 @@ const ViewBikeScreen: React.FC = () => {
   const bikeList = bikes.map((bike) => {
     return (
       <View key={bike.id} style={styles.emptySpace}>
-        <BikeSummary location={bike.location} model={bike.model} />
+        <BikeSummary
+          latitude={bike.location.coords.latitude}
+          longitude={bike.location.coords.longitude}
+          model={bike.model}
+        />
       </View>
     );
   });
