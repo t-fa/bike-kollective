@@ -10,6 +10,16 @@ export type BikeType = {
 };
 
 export type Location = {
+  coords: Coords;
+  timestamp: number;
+};
+
+export type Coords = {
+  accuracy: number;
+  altitude: null;
+  altitudeAccuracy: null;
+  heading: null;
   latitude: number;
   longitude: number;
+  speed: null;
 };

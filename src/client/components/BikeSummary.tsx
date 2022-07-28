@@ -1,15 +1,15 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { BikeType } from './types';
+import { BikeType, Coords } from './types';
 
-type Props = Pick<BikeType, 'location' | 'model'>;
+type Props = Pick<BikeType, 'model'> & Pick<Coords, 'latitude' | 'longitude'>;
 
-const BikeSummary: React.FC<Props> = ({ location, model }) => {
+const BikeSummary: React.FC<Props> = ({ model, latitude, longitude }) => {
   return (
     <View>
       <Text>{model}</Text>
-      <Text>Latitude: {location.latitude}</Text>
-      <Text>Longitude: {location.longitude}</Text>
+      <Text>Latitude: {latitude}</Text>
+      <Text>Longitude: {longitude}</Text>
     </View>
   );
 };
