@@ -1,6 +1,7 @@
 import { ourFirestore, User as FirebaseUser } from '../../server';
 import { Bike, User } from '../types/types';
 import { QuerySnapshot } from '../../../node_modules/@firebase/firestore/dist';
+import { ExpoPushToken } from 'expo-notifications';
 
 /**
  * Create Firestore document using information from authenticated user.
@@ -89,6 +90,24 @@ export const getReviwsFromFirestore = async (
     ourFirestore.where('id', '==', bikeId)
   );
   return await ourFirestore.getDocs(q);
+};
+
+/**
+ * Adds push notification to user document
+ */
+export const addPushTokenToUser = async (
+  userId: string,
+  token: ExpoPushToken
+) => {
+  const userDoc = ourFirestore.doc(ourFirestore.db, 'users', userId);
+
+  await ourFirestore.setDoc(
+    userDoc,
+    {
+      pushToken: token
+    },
+    { merge: true }
+  );
 };
 
 /*const getBikeCollection = async () => {

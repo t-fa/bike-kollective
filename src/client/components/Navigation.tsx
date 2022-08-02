@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from './AuthContext';
-import { Screens, Tabs } from '../types/types';
+import { Screens, Tabs, Subscription } from '../types/types';
+import * as Notifications from 'expo-notifications';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import WaiverScreen from '../screens/WaiverScreen';
@@ -16,8 +17,18 @@ import BikeDetailScreen from '../screens/BikeDetailScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import CurrentLocation from './CurrentLocation';
 import { View } from 'react-native';
-
+import {
+  addPushTokenToUser,
+  getUserFromFirestore
+} from '../firebase/firestore';
+import { ourAuth } from '../../server';
+import {
+  firstBikeReturnReminder,
+  registerForPushNotificationsAsync
+} from './Notfications';
+import ReturnBikeScreen from '../screens/ReturnBike';
 const AuthStack = createNativeStackNavigator();
+
 export const AuthScreens = () => {
   return (
     <AuthStack.Navigator>
@@ -101,8 +112,72 @@ export const ReviewBikeScreenStack = () => {
   );
 };
 
+const ReturnBikeStack = createNativeStackNavigator();
+export const ReturnBikeScreenStack = () => {
+  return (
+    <ReturnBikeStack.Navigator>
+      <ReturnBikeStack.Screen
+        name={Screens.ReturnBikeScreen}
+        component={ReturnBikeScreen}
+        options={{ headerShown: false }}
+      />
+    </ReturnBikeStack.Navigator>
+  );
+};
+
 const Tab = createMaterialTopTabNavigator();
 export const TopTabs = () => {
+  const notificationListener = useRef<Subscription>();
+  const responseListener = useRef<Subscription>();
+  const [notification, setNotification] =
+    useState<Notifications.Notification>();
+
+  useEffect(() => {
+    // Get user
+    const checkUser = async () => {
+      const user = await getUserFromFirestore(ourAuth.auth.currentUser?.uid);
+      return user;
+    };
+
+    // If user does not have token, request permissionss
+    checkUser().then((user) => {
+      if (user.pushToken == undefined) {
+        registerForPushNotificationsAsync()
+          .then((token) =>
+            addPushTokenToUser(ourAuth.auth.currentUser?.uid, token)
+          )
+          .catch((err) => console.log(err));
+      }
+    });
+
+    // This listener is fired whenever a notification is received while the app is foregrounded
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    const random = async () => {
+      await firstBikeReturnReminder().then((res) => {
+        console.log(res);
+      });
+    };
+    random();
+    console.log(notification);
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
   return (
     <Tab.Navigator
       backBehavior="initialRoute"
@@ -137,6 +212,14 @@ export const TopTabs = () => {
         }}
       />
       <Tab.Screen
+        name={Tabs.ReturnBikeTab}
+        component={ReturnBikeScreenStack}
+        options={{
+          title: 'Return Bike',
+          tabBarIcon: () => <Ionicons name={'remove-circle'} size={30} />
+        }}
+      />
+      <Tab.Screen
         name={Tabs.ProfileTab}
         component={ProfileScreen}
         options={{
@@ -158,7 +241,7 @@ export const Router = () => {
       {/*{isSignedIn ? <MainScreens /> : <AuthScreens />}*/}
       {isSignedIn ? <TopTabs /> : <AuthScreens />}
       <View
-        style={{ display: 'flex', alignItems: 'center', paddingBottom: '50px' }}
+        style={{ display: 'flex', alignItems: 'center', paddingBottom: '1%' }}
       >
         <CurrentLocation />
       </View>

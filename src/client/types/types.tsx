@@ -9,6 +9,7 @@ export type RootStackParamList = {
   BikeDetailScreen: { bike: Bike; review: Review[] };
   ViewBikeScreen: undefined;
   ReviewBikeScreen: Review;
+  ReturnBikeScreen: { user: User; bike: Bike };
 };
 
 export enum Screens {
@@ -19,13 +20,15 @@ export enum Screens {
   AddBikeScreen = 'AddBikeScreen',
   BikeDetailScreen = 'BikeDetailScreen',
   ViewBikeScreen = 'ViewBikeScreen',
-  ReviewBikeScreen = 'ReviewBikeScreen'
+  ReviewBikeScreen = 'ReviewBikeScreen',
+  ReturnBikeScreen = 'ReturnBikeScreen'
 }
 
 export enum Tabs {
   HomeTab = 'HomeTab',
   AddBikeTab = 'AddBikeTab',
   ReviewBikeTab = 'ReviewBikeTab',
+  ReturnBikeTab = 'ReturnBikeTab',
   ProfileTab = 'ProfileTab'
 }
 
@@ -69,6 +72,15 @@ export type ReviewBikeScreenProps = NativeStackScreenProps<
   Screens.ReviewBikeScreen
 >;
 
+export type ReturnBikeScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  Screens.ReturnBikeScreen
+>;
+
+export type Subscription = {
+  remove: () => void;
+};
+
 export type Navigation = {
   navigate: (screen: string) => void;
 };
@@ -77,6 +89,7 @@ export type User = {
   name: string;
   email: string;
   id: string;
+  pushToken: string;
   signedWaiver: boolean;
   bikesOwned: Bike[];
   bikeCurrentlyCheckedOut: Bike;

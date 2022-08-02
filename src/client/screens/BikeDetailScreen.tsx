@@ -17,18 +17,31 @@ const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({
     const getUrl = async () => {
       setImageUrl(await getBikeImageUrl(bike.photo));
     };
+
+    // Calculates ratng and adds items to issues list
     const calculateRating = () => {
       let totalRating = 0;
       const issuesList: Issue[] = [];
-      reviews.map((review, index) => {
-        totalRating += parseFloat(review.rating);
-        issuesList.push({
-          user: review.reviewer + '_' + index.toString(),
-          comments: review.comments,
-          bikeId: review.id + '_' + index.toString(),
-          issueId: review.reviewId
-        });
-      });
+      reviews.map(
+        (
+          review: {
+            rating: string;
+            reviewer: string;
+            comments: string;
+            id: string;
+            reviewId: string;
+          },
+          index: { toString: () => string }
+        ) => {
+          totalRating += parseFloat(review.rating);
+          issuesList.push({
+            user: review.reviewer + '_' + index.toString(),
+            comments: review.comments,
+            bikeId: review.id + '_' + index.toString(),
+            issueId: review.reviewId
+          });
+        }
+      );
       setRating(Number((totalRating / reviews.length).toFixed(1)));
       setIssues(issuesList);
     };

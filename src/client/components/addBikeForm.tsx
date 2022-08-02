@@ -11,7 +11,16 @@ import * as Yup from 'yup';
 import { ourAuth, ourFirestore, ourStorage } from '../../server';
 import * as Location from 'expo-location';
 
-const AddBikeForm: React.FC = ({ formData, updateForm, bikePhotoUri }) => {
+type AddBikeFormProps = {
+  data: object;
+  capturedImage: string;
+};
+
+const AddBikeForm: React.FC<AddBikeFormProps> = ({
+  formData,
+  updateForm,
+  bikePhotoUri
+}) => {
   const [location, setLocation] = React.useState<Location.LocationObject>();
 
   // Validation
