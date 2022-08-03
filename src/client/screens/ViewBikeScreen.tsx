@@ -1,31 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Text, View, ActivityIndicator } from 'react-native';
 import BikeSummary from '../components/BikeSummary';
 import styles from '../styles/StyleSheet';
 import { ourFirestore } from '../../server';
 import { BikeType } from '../components/types';
-import * as Location from 'expo-location';
+import { LocationContext } from '../context/Location';
 
 // https://firebase.google.com/docs/database/web/read-and-write#read_data_once
 
 const ViewBikeScreen: React.FC = () => {
   const [bikes, setBikes] = useState<BikeType[]>([]);
-  const [location, setLocation] = useState<Location.LocationObject>();
   const [loading, setLoading] = useState<boolean>(true);
 
-  // get current location
-  React.useEffect(() => {
-    (async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        return;
-      }
+  const location = useContext(LocationContext);
 
-      const loc = await Location.getCurrentPositionAsync({});
-      setLocation(loc);
+  useEffect(() => {
+    if (location) {
       setLoading(false);
-    })();
-  }, []);
+    }
+  }, [location]);
 
   // get bikes data from google
   useEffect(() => {
