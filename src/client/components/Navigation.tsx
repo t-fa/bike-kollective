@@ -10,7 +10,7 @@ import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import WaiverScreen from '../screens/WaiverScreen';
 import HomeScreen from '../screens/HomeScreen';
-import AddBikeScreen from '../screens/addBike';
+import AddBikeScreen from '../screens/AddBike';
 import ViewBikeScreen from '../screens/ViewBikeScreen';
 import ReviewBikeScreen from '../screens/ReviewBike';
 import BikeDetailScreen from '../screens/BikeDetailScreen';
@@ -145,9 +145,9 @@ export const TopTabs = () => {
           .then((token) =>
             addPushTokenToUser(ourAuth.auth.currentUser?.uid, token)
           )
-          .catch((err) => console.log(err));
+          .catch((err) => console.error(err));
       } else {
-        console.log('user has token');
+        console.log('User has token');
       }
     });
 

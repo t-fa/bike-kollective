@@ -92,7 +92,7 @@ export type User = {
   pushToken: string;
   signedWaiver: boolean;
   bikesOwned: Bike[];
-  bikeCurrentlyCheckedOut: Bike;
+  currentBike: string;
   banned: boolean;
 };
 
