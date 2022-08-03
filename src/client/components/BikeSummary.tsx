@@ -1,43 +1,48 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { BikeType, Coords } from './types';
-import { haversineDistance } from '../helpers/haversine';
-
-type CurrentLoc = {
-  currentLat: number | undefined;
-  currentLon: number | undefined;
-};
+import { Card, Text, Divider } from 'react-native-paper';
+import { getBikeImageUrl } from '../firebase/storage';
 
 type Props = Pick<BikeType, 'model'> &
-  Pick<Coords, 'latitude' | 'longitude'> &
-  CurrentLoc;
+  Pick<Coords, 'latitude' | 'longitude'> & {
+    photo: string;
+    distance: number;
+    loading: boolean;
+  };
 
 const BikeSummary: React.FC<Props> = ({
   model,
-  currentLat,
-  currentLon,
+  distance,
   latitude,
-  longitude
+  longitude,
+  loading,
+  photo
 }) => {
-  const distance = haversineDistance(
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    [currentLat, currentLon],
-    [latitude, longitude],
-    true
-  );
+  const [imageUrl, setImageUrl] = useState<string>('');
+
+  useEffect(() => {
+    const getUrl = async () => {
+      setImageUrl(await getBikeImageUrl(photo));
+    };
+
+    getUrl();
+  }, [loading]);
 
   return distance ? (
-    <View>
-      <Text>{model}</Text>
-      <Text>Distance: {parseInt(distance)} miles away</Text>
-      <Text>Latitude: {latitude}</Text>
-      <Text>Longitude: {longitude}</Text>
-    </View>
+    <Card>
+      <Card.Cover source={{ uri: imageUrl }} />
+      <Card.Title title={model} />
+      <Card.Content>
+        <Text>Latitude: {latitude}</Text>
+        <Text>Longitude: {longitude}</Text>
+        <Divider />
+        <Text>{parseInt(distance)} miles away</Text>
+      </Card.Content>
+    </Card>
   ) : (
-    <View>
+    <Card>
       <Text>An error with your current location has occurred :(</Text>
-    </View>
+    </Card>
   );
 };
 

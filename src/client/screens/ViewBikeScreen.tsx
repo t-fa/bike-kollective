@@ -1,31 +1,40 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Text, View, ActivityIndicator } from 'react-native';
 import BikeSummary from '../components/BikeSummary';
 import styles from '../styles/StyleSheet';
 import { ourFirestore } from '../../server';
 import { BikeType } from '../components/types';
-import * as Location from 'expo-location';
+import { LocationContext } from '../context/Location';
+import { haversineDistance } from '../helpers/haversine';
 
-// https://firebase.google.com/docs/database/web/read-and-write#read_data_once
+const compare = (a: BikeType, b: BikeType) => {
+  const bikeA = a.distance;
+  const bikeB = b.distance;
+
+  let comparison = 0;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  if (bikeA > bikeB) {
+    comparison = 1;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+  } else if (bikeA < bikeB) {
+    comparison = -1;
+  }
+  return comparison;
+};
 
 const ViewBikeScreen: React.FC = () => {
   const [bikes, setBikes] = useState<BikeType[]>([]);
-  const [location, setLocation] = useState<Location.LocationObject>();
   const [loading, setLoading] = useState<boolean>(true);
 
-  // get current location
-  React.useEffect(() => {
-    (async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        return;
-      }
+  const location = useContext(LocationContext);
 
-      const loc = await Location.getCurrentPositionAsync({});
-      setLocation(loc);
+  useEffect(() => {
+    if (location) {
       setLoading(false);
-    })();
-  }, []);
+    }
+  }, [location]);
 
   // get bikes data from google
   useEffect(() => {
@@ -37,8 +46,18 @@ const ViewBikeScreen: React.FC = () => {
       querySnapshot.forEach((doc) => {
         const bike = { ...doc.data() };
         bike.id = doc.id;
+        const distance = haversineDistance(
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          [location?.coords.latitude, location?.coords.longitude],
+          [bike.location.coords.latitude, bike.location.coords.longitude],
+          true
+        );
+        bike.distance = distance;
         bikesArr.push(bike as BikeType);
       });
+
+      bikesArr.sort(compare);
 
       setBikes(bikesArr);
     };
@@ -47,14 +66,23 @@ const ViewBikeScreen: React.FC = () => {
   }, []);
 
   const bikeList = bikes.map((bike) => {
+    const distance = haversineDistance(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      [location?.coords.latitude, location?.coords.longitude],
+      [bike.location.coords.latitude, bike.location.coords.longitude],
+      true
+    );
+    bike.distance = distance;
     return (
       <View key={bike.id} style={styles.emptySpace}>
         <BikeSummary
-          currentLat={location?.coords.latitude}
-          currentLon={location?.coords.longitude}
+          distance={distance}
           latitude={bike.location.coords.latitude}
           longitude={bike.location.coords.longitude}
+          loading={loading}
           model={bike.model}
+          photo={bike.photo}
         />
       </View>
     );
