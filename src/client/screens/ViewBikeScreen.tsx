@@ -75,21 +75,40 @@ const ViewBikeScreen: React.FC<ViewBikeScreenProps> = ({ navigation }) => {
     <View style={styles.bikeListContainer}>
       <FlatList
         data={bikes}
-        renderItem={({ item }) => (
-          <Card key={item.id}>
-            <Card.Content>
-              <BikeSummary
-                distance={item.distance}
-                loading={loading}
-                bike={item}
-                navigation={navigation}
-              />
-            </Card.Content>
-          </Card>
-        )}
+        renderItem={({ item }) => {
+          if (!item.checkedOut) {
+            return (
+              <Card key={item.id}>
+                <Card.Content>
+                  <BikeSummary
+                    distance={item.distance}
+                    loading={loading}
+                    bike={item}
+                    navigation={navigation}
+                  />
+                </Card.Content>
+              </Card>
+            );
+          }
+          return <View />;
+        }}
       ></FlatList>
     </View>
   );
 };
 
 export default ViewBikeScreen;
+
+/*
+renderItem={({ item }) => (
+  <Card key={item.id}>
+    <Card.Content>
+      <BikeSummary
+        distance={item.distance}
+        loading={loading}
+        bike={item}
+        navigation={navigation}
+      />
+    </Card.Content>
+  </Card>
+)}*/
