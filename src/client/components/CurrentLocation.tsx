@@ -1,26 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
-import * as Location from 'expo-location';
+import {
+  LocationErrorContext,
+  LocationLoadingContext,
+  LocationContext
+} from '../context/Location';
 
 const CurrentLocation: React.FC = () => {
-  const [location, setLocation] = useState<Location.LocationObject>();
-  const [errorMsg, setErrorMsg] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    (async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied :(');
-        setLoading(false);
-        return;
-      }
-
-      const loc = await Location.getCurrentPositionAsync({});
-      setLocation(loc);
-      setLoading(false);
-    })();
-  }, []);
+  const loading = React.useContext(LocationLoadingContext);
+  const errorMsg = React.useContext(LocationErrorContext);
+  const location = React.useContext(LocationContext);
 
   return loading ? (
     <>

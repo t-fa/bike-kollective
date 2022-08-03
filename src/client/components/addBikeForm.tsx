@@ -9,11 +9,9 @@ import {
 import { Formik, FormikProps, FormikValues } from 'formik';
 import * as Yup from 'yup';
 import { ourAuth, ourFirestore, ourStorage } from '../../server';
-import * as Location from 'expo-location';
+import { LocationContext } from '../context/Location';
 
 const AddBikeForm: React.FC = ({ formData, updateForm, bikePhotoUri }) => {
-  const [location, setLocation] = React.useState<Location.LocationObject>();
-
   // Validation
   const validate = Yup.object({
     model: Yup.string()
@@ -25,17 +23,7 @@ const AddBikeForm: React.FC = ({ formData, updateForm, bikePhotoUri }) => {
     lockCombination: Yup.string().required('Required')
   });
 
-  React.useEffect(() => {
-    (async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        return;
-      }
-
-      const loc = await Location.getCurrentPositionAsync({});
-      setLocation(loc);
-    })();
-  }, []);
+  const location = React.useContext(LocationContext);
 
   return (
     <View style={styles.container}>
