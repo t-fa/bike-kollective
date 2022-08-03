@@ -25,7 +25,7 @@ import { ourAuth } from '../../server';
 import {
   firstBikeReturnReminder,
   registerForPushNotificationsAsync
-} from './Notfications';
+} from '../helpers/Notfications';
 import ReturnBikeScreen from '../screens/ReturnBike';
 const AuthStack = createNativeStackNavigator();
 
@@ -135,8 +135,7 @@ export const TopTabs = () => {
   useEffect(() => {
     // Get user
     const checkUser = async () => {
-      const user = await getUserFromFirestore(ourAuth.auth.currentUser?.uid);
-      return user;
+      return await getUserFromFirestore(ourAuth.auth.currentUser?.uid);
     };
 
     // If user does not have token, request permissionss
@@ -147,6 +146,8 @@ export const TopTabs = () => {
             addPushTokenToUser(ourAuth.auth.currentUser?.uid, token)
           )
           .catch((err) => console.log(err));
+      } else {
+        console.log('user has token');
       }
     });
 

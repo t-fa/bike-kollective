@@ -9,7 +9,7 @@ export type RootStackParamList = {
   BikeDetailScreen: { bike: Bike; review: Review[] };
   ViewBikeScreen: undefined;
   ReviewBikeScreen: Review;
-  ReturnBikeScreen: { user: User; bike: Bike };
+  ReturnBikeScreen: { user: User };
 };
 
 export enum Screens {
