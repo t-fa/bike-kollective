@@ -77,7 +77,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
         <View style={styles.row}>
           <Text>Sign in using another account? </Text>
-          <TouchableOpacity onPress={() => userSignOut()}>
+          <TouchableOpacity onPress={() => userSignOut(setIsSignedIn)}>
             <Text style={styles.link}>Log out</Text>
           </TouchableOpacity>
         </View>

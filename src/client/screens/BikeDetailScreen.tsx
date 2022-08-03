@@ -1,22 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, Button, Image, FlatList } from 'react-native';
-import { BikeDetailScreenProps, Issue } from '../types/types';
+import {
+  Text,
+  View,
+  Button,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  ScrollView
+} from 'react-native';
+import { BikeDetailScreenProps, Issue, Review } from '../types/types';
 import { getBikeImageUrl } from '../firebase/storage';
 import styles from '../styles/StyleSheet';
+import { useNavigation } from '@react-navigation/native';
+import { checkOutBike, getReviewsFromFirestore } from '../firebase/firestore';
 
-const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({
-  /*navigation,*/ route
-}) => {
+const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({ route }) => {
   const [imageUrl, setImageUrl] = useState<string>('');
-  const bike = route.params.bike;
-  const reviews = route.params.review;
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [rating, setRating] = useState<number>(0);
   const [issues, setIssues] = useState<Issue[]>([]);
+
+  const navigation = useNavigation();
+  const bike = route.params;
 
   useEffect(() => {
     const getUrl = async () => {
       setImageUrl(await getBikeImageUrl(bike.photo));
     };
+    const getReviews = async () => {
+      const reviews = await getReviewsFromFirestore('4eXBUNqHKVUdSzFbziUW');
+      const reviewsList: Review[] = [];
+      await reviews.forEach((doc) => {
+        const review = doc.data();
+        review['reviewId'] = doc.id;
+        reviewsList.push(review as Review);
+      });
+      setReviews(reviewsList);
+    };
+
     const calculateRating = () => {
       let totalRating = 0;
       const issuesList: Issue[] = [];
@@ -34,15 +55,16 @@ const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({
     };
 
     getUrl();
+    getReviews();
     calculateRating();
   }, []);
 
-  // TODO: add back button, or some other way to leave
-
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.smallEmptySpace} />
       <Text>Model: {bike.model}</Text>
-      <Text>Current Location: {bike.currentLocation}</Text>
+      <Text>Longitude: {bike.location.coords.longitude}</Text>
+      <Text>Latitude: {bike.location.coords.latitude}</Text>
       <Text>Average Rating: {rating} star(s)</Text>
       <Text>Comments: {bike.comments}</Text>
       <Text>Reviews And Issues Reported By Other Riders:</Text>
@@ -69,12 +91,33 @@ const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({
         style={{ width: 200, height: 200 }}
         source={{ uri: imageUrl }}
       ></Image>
-      <Button
-        title="Check out"
-        /*onPress={() => checkoutBike(bikeId)}*/
-      ></Button>
-      <Text>Bike out of date? Update</Text>
-    </View>
+
+      <View style={styles.smallEmptySpace} />
+      <TouchableOpacity
+        style={[styles.bikeDetailButtonOutlined]}
+        onPress={() => {
+          checkOutBike(bike.id);
+        }}
+      >
+        <Text style={styles.buttonOutlineText}>Check out</Text>
+      </TouchableOpacity>
+
+      <View style={styles.smallEmptySpace} />
+      <Text>
+        Bike out of date? <Text style={styles.link}>Update</Text>
+      </Text>
+      <View style={styles.smallEmptySpace} />
+
+      <TouchableOpacity
+        style={styles.bikeDetailButton}
+        onPress={() => {
+          navigation.goBack();
+        }}
+      >
+        <Text style={styles.buttonText}>Go back</Text>
+      </TouchableOpacity>
+      <View style={styles.smallEmptySpace} />
+    </ScrollView>
   );
 };
 

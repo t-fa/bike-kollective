@@ -20,11 +20,13 @@ import {
   addDoc,
   getDoc,
   setDoc,
+  updateDoc,
   getDocs,
   onSnapshot,
   clearIndexedDbPersistence,
   query,
-  where
+  where,
+  QuerySnapshot
 } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
@@ -67,6 +69,7 @@ const ourFirestore = {
   addDoc: addDoc,
   getDoc: getDoc,
   setDoc: setDoc,
+  updateDoc: updateDoc,
   getDocs: getDocs,
   onSnapShot: onSnapshot,
   clearIndexedDbPersistence: clearIndexedDbPersistence,
@@ -81,4 +84,4 @@ const ourStorage = {
   getDownloadURL: getDownloadURL
 };
 
-export { ourAuth, ourFirestore, ourStorage, User, Unsubscribe };
+export { ourAuth, ourFirestore, ourStorage, User, Unsubscribe, QuerySnapshot };

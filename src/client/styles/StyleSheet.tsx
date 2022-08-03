@@ -10,6 +10,12 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: '80%'
   },
+  bikeListContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+    paddingHorizontal: '20%',
+    paddingTop: '3.5%'
+  },
   input: {
     backgroundColor: 'white',
     paddingHorizontal: 15,
@@ -22,6 +28,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 40
+  },
+  bikeDetailButton: {
+    backgroundColor: 'blue',
+    width: '30%',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center'
+  },
+  bikeDetailButtonOutlined: {
+    backgroundColor: 'white',
+    width: '30%',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'blue'
   },
   button: {
     backgroundColor: 'blue',
@@ -63,6 +85,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginVertical: 20
   },
+  smallEmptySpace: {
+    paddingHorizontal: 10,
+    paddingVertical: 10
+  },
   emptySpace: {
     paddingHorizontal: 40,
     paddingVertical: 40
@@ -78,6 +104,9 @@ const styles = StyleSheet.create({
     marginTop: 1,
     paddingTop: 1,
     paddingHorizontal: 5
+  },
+  viewBikesCard: {
+    backgroundColor: 'whitesmoke'
   }
 });
 
