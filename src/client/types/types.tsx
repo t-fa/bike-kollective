@@ -1,4 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { BikeType, Location } from '../components/types';
 
 export type RootStackParamList = {
   LoginScreen: undefined;
@@ -6,33 +7,36 @@ export type RootStackParamList = {
   WaiverScreen: undefined;
   HomeScreen: undefined;
   AddBikeScreen: undefined;
-  BikeDetailScreen: { bike: Bike; review: Review[] };
+  BikeDetailScreen: {
+    model: string;
+    photo: string;
+    comments: string;
+    issues: string;
+    location: Location;
+    id: string;
+    bike: BikeType;
+  };
   ViewBikeScreen: undefined;
   ReviewBikeScreen: Review;
 };
 
 export enum Screens {
-  HomeScreen = 'HomeScreen',
   LoginScreen = 'LoginScreen',
   RegisterScreen = 'RegisterScreen',
   WaiverScreen = 'WaiverScreen',
-  AddBikeScreen = 'AddBikeScreen',
-  BikeDetailScreen = 'BikeDetailScreen',
   ViewBikeScreen = 'ViewBikeScreen',
-  ReviewBikeScreen = 'ReviewBikeScreen'
+  BikeDetailScreen = 'BikeDetailScreen',
+  AddBikeScreen = 'AddBikeScreen',
+  ReviewBikeScreen = 'ReviewBikeScreen',
+  ProfileScreen = 'ProfileScreen'
 }
 
 export enum Tabs {
-  HomeTab = 'HomeTab',
+  HomeTab = 'ViewBikesTab',
   AddBikeTab = 'AddBikeTab',
   ReviewBikeTab = 'ReviewBikeTab',
   ProfileTab = 'ProfileTab'
 }
-
-export type HomeScreenProps = NativeStackScreenProps<
-  RootStackParamList,
-  Screens.HomeScreen
->;
 
 export type LoginScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -73,13 +77,17 @@ export type Navigation = {
   navigate: (screen: string) => void;
 };
 
+export type DetailNavigation = {
+  navigate: (screen: string, bike: BikeType) => void;
+};
+
 export type User = {
   name: string;
   email: string;
   id: string;
   signedWaiver: boolean;
   bikesOwned: Bike[];
-  bikeCurrentlyCheckedOut: Bike;
+  checkedOutBikeId: string;
   banned: boolean;
 };
 
