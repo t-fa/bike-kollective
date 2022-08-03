@@ -1,5 +1,5 @@
 import React from 'react';
-import { HomeScreenProps } from '../types/types';
+import { ProfileScreenProps } from '../types/types';
 import styles from '../styles/StyleSheet';
 import {
   KeyboardAvoidingView,
@@ -11,7 +11,7 @@ import {
 import { useAuth } from '../components/AuthContext';
 import { userSignOut } from '../firebase/authentication';
 
-const ProfileScreen: React.FC<HomeScreenProps> = (/*{ navigation }*/) => {
+const ProfileScreen: React.FC<ProfileScreenProps> = (/*{ navigation }*/) => {
   const { setIsSignedIn } = useAuth();
 
   return (

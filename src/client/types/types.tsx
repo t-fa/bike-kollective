@@ -18,6 +18,7 @@ export type RootStackParamList = {
   };
   ViewBikeScreen: undefined;
   ReviewBikeScreen: Review;
+  ProfileScreen: undefined;
 };
 
 export enum Screens {
@@ -71,6 +72,11 @@ export type ViewBikeScreenProps = NativeStackScreenProps<
 export type ReviewBikeScreenProps = NativeStackScreenProps<
   RootStackParamList,
   Screens.ReviewBikeScreen
+>;
+
+export type ProfileScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  Screens.ProfileScreen
 >;
 
 export type Navigation = {
