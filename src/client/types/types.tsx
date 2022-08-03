@@ -33,7 +33,7 @@ export enum Screens {
 }
 
 export enum Tabs {
-  HomeTab = 'ViewBikesTab',
+  ViewBikesTab = 'ViewBikesTab',
   AddBikeTab = 'AddBikeTab',
   ReviewBikeTab = 'ReviewBikeTab',
   ProfileTab = 'ProfileTab'
@@ -92,12 +92,12 @@ export type User = {
   email: string;
   id: string;
   signedWaiver: boolean;
-  bikesOwned: Bike[];
+  bikesOwned: BikeType[];
   checkedOutBikeId: string;
   banned: boolean;
 };
 
-export type Bike = {
+/*export type Bike = {
   id: string;
   owner: User | undefined;
   model: string;
@@ -109,7 +109,7 @@ export type Bike = {
   currentlyCheckedOut: boolean;
   lockCombination: number;
   stolen: boolean;
-};
+};*/
 
 export type Review = {
   comments: string;

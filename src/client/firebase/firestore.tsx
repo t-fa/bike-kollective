@@ -4,7 +4,8 @@ import {
   QuerySnapshot,
   User as FirebaseUser
 } from '../../server';
-import { Bike, User } from '../types/types';
+import { User } from '../types/types';
+import { BikeType } from '../components/types';
 
 /**
  * Create Firestore document using information from authenticated user.
@@ -63,9 +64,11 @@ export const documentExists = async (
 /**
  * Return a Bike object, given the bike document's Firestore ID
  * */
-export const getBikeFromFirestore = async (bikeId: string): Promise<Bike> => {
+export const getBikeFromFirestore = async (
+  bikeId: string
+): Promise<BikeType> => {
   const theBikeDocument = await getDocumentById('bikes', bikeId);
-  return theBikeDocument.data() as Bike;
+  return theBikeDocument.data() as BikeType;
 };
 
 /**
@@ -140,4 +143,23 @@ export const getCheckedOutBikeId = async (): Promise<string> => {
   }
 
   throw false;
+};
+
+/**
+ * Set the bike's stolen status
+ * */
+export const setStolenStatus = async (
+  bikeId: string,
+  status: boolean
+): Promise<void> => {
+  const bikeDoc = await getDocumentById('bikes', bikeId);
+  await ourFirestore.updateDoc(bikeDoc.ref, { stolen: status });
+};
+
+/**
+ * Determine if bike is stolen
+ * */
+export const isBikeStolen = async (bikeId: string): Promise<boolean> => {
+  const bike = await getBikeFromFirestore(bikeId);
+  return bike.stolen;
 };
