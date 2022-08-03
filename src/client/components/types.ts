@@ -1,4 +1,5 @@
 export type BikeType = {
+  distance?: number;
   id?: string;
   comments: string;
   issues: string;
