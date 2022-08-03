@@ -80,6 +80,7 @@ const ViewBikeScreen: React.FC = () => {
           distance={distance}
           latitude={bike.location.coords.latitude}
           longitude={bike.location.coords.longitude}
+          loading={loading}
           model={bike.model}
           photo={bike.photo}
         />
