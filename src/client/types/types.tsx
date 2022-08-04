@@ -88,9 +88,9 @@ export type DetailNavigation = {
 };
 
 export type User = {
+  userId: string;
   name: string;
   email: string;
-  id: string;
   signedWaiver: boolean;
   bikesOwned: BikeType[];
   checkedOutBikeId: string;

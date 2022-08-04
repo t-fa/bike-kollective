@@ -15,7 +15,8 @@ import { useNavigation } from '@react-navigation/native';
 import {
   checkOutBike,
   getReviewsFromFirestore,
-  setStolenStatus
+  setStolenStatus,
+  userHasABikeCheckedOut
 } from '../firebase/firestore';
 
 const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({ route }) => {
@@ -69,6 +70,18 @@ const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({ route }) => {
     navigation.goBack();
   };
 
+  const onCheckOutClick = async (bikeId: string) => {
+    if (await userHasABikeCheckedOut()) {
+      alert('You already have a bike checked out.');
+      return;
+    }
+
+    const lockCombo = await checkOutBike(bikeId);
+    alert(`Bike checked out! Lock combination: ${lockCombo}. 
+    The combination is also in the Profile section.`);
+    navigation.goBack();
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.smallEmptySpace} />
@@ -106,7 +119,7 @@ const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({ route }) => {
       <TouchableOpacity
         style={[styles.bikeDetailButtonOutlined]}
         onPress={() => {
-          checkOutBike(bike.id);
+          onCheckOutClick(bike.id);
         }}
       >
         <Text style={styles.buttonOutlineText}>Check out</Text>

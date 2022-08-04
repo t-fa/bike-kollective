@@ -125,6 +125,17 @@ export const googleSignIn = async (
 export const isUserSignedIn = (): boolean => ourAuth.auth.currentUser != null;
 
 /**
+ * Return logged in user's id
+ * */
+export const getUserId = (): string => {
+  const user = ourAuth.auth.currentUser;
+  if (user) {
+    return user.uid;
+  }
+  return '';
+};
+
+/**
  * Sign out an authenticated user and return to LoginScreen
  * */
 export const userSignOut = async (
