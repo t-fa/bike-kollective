@@ -1,11 +1,13 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { Text, View, ActivityIndicator } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, Text, View } from 'react-native';
 import BikeSummary from '../components/BikeSummary';
 import styles from '../styles/StyleSheet';
 import { ourFirestore } from '../../server';
 import { BikeType } from '../components/types';
 import { LocationContext } from '../context/Location';
 import { haversineDistance } from '../helpers/haversine';
+import { ViewBikeScreenProps } from '../types/types';
+import { Card } from 'react-native-paper';
 
 const compare = (a: BikeType, b: BikeType) => {
   const bikeA = a.distance;
@@ -24,7 +26,7 @@ const compare = (a: BikeType, b: BikeType) => {
   return comparison;
 };
 
-const ViewBikeScreen: React.FC = () => {
+const ViewBikeScreen: React.FC<ViewBikeScreenProps> = ({ navigation }) => {
   const [bikes, setBikes] = useState<BikeType[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -46,14 +48,13 @@ const ViewBikeScreen: React.FC = () => {
       querySnapshot.forEach((doc) => {
         const bike = { ...doc.data() };
         bike.id = doc.id;
-        const distance = haversineDistance(
+        bike.distance = haversineDistance(
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           [location?.coords.latitude, location?.coords.longitude],
           [bike.location.coords.latitude, bike.location.coords.longitude],
           true
         );
-        bike.distance = distance;
         bikesArr.push(bike as BikeType);
       });
 
@@ -65,42 +66,49 @@ const ViewBikeScreen: React.FC = () => {
     getBikes();
   }, []);
 
-  const bikeList = bikes.map((bike) => {
-    const distance = haversineDistance(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      [location?.coords.latitude, location?.coords.longitude],
-      [bike.location.coords.latitude, bike.location.coords.longitude],
-      true
-    );
-    bike.distance = distance;
-    return (
-      <View key={bike.id} style={styles.emptySpace}>
-        <BikeSummary
-          distance={distance}
-          latitude={bike.location.coords.latitude}
-          longitude={bike.location.coords.longitude}
-          loading={loading}
-          model={bike.model}
-          photo={bike.photo}
-        />
-      </View>
-    );
-  });
-
   return loading ? (
     <View style={styles.container}>
       <Text>Bike data loading...</Text>
       <ActivityIndicator />
     </View>
   ) : (
-    <View style={styles.container}>
-      <View style={{ display: 'flex' }}>
-        <Text style={styles.title}>Nearby Bikes:</Text>
-      </View>
-      {bikeList}
+    <View style={styles.bikeListContainer}>
+      <FlatList
+        data={bikes}
+        renderItem={({ item }) => {
+          if (!item.checkedOut) {
+            return (
+              <Card key={item.id}>
+                <Card.Content>
+                  <BikeSummary
+                    distance={item.distance}
+                    loading={loading}
+                    bike={item}
+                    navigation={navigation}
+                  />
+                </Card.Content>
+              </Card>
+            );
+          }
+          return <View />;
+        }}
+      ></FlatList>
     </View>
   );
 };
 
 export default ViewBikeScreen;
+
+/*
+renderItem={({ item }) => (
+  <Card key={item.id}>
+    <Card.Content>
+      <BikeSummary
+        distance={item.distance}
+        loading={loading}
+        bike={item}
+        navigation={navigation}
+      />
+    </Card.Content>
+  </Card>
+)}*/

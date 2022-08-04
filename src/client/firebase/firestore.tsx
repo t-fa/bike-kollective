@@ -1,6 +1,10 @@
-import { ourFirestore, User as FirebaseUser } from '../../server';
+import {
+  ourAuth,
+  ourFirestore,
+  QuerySnapshot,
+  User as FirebaseUser
+} from '../../server';
 import { Bike, User } from '../types/types';
-import { QuerySnapshot } from '../../../node_modules/@firebase/firestore/dist';
 import { ExpoPushToken } from 'expo-notifications';
 
 /**
@@ -82,7 +86,7 @@ const getDocumentById = async (collection: string, documentId: string) => {
 /**
  * Get Review for Bike, given the bikes document's Firestore ID
  */
-export const getReviwsFromFirestore = async (
+export const getReviewsFromFirestore = async (
   bikeId: string
 ): Promise<QuerySnapshot> => {
   const q = ourFirestore.query(
@@ -114,11 +118,99 @@ export const addPushTokenToUser = async (
     return await ourFirestore.getDocs(
         ourFirestore.collection(ourFirestore.db, 'bikes'));
 }*/
+/*
+ * Set the bike as checked out in the Bikes collection, and for the current user
+ * */
+export const checkOutBike = async (
+  bikeId: string,
+  time: string
+): Promise<void> => {
+  const bikeDoc = await getDocumentById('bikes', bikeId);
+  await ourFirestore.updateDoc(bikeDoc.ref, {
+    checkedOut: true,
+    checkedOutTime: time
+  });
+  await checkOutBikeToUser(bikeId);
+};
 
 /**
- * Set the bike as checked out in Firestore, given the bike document's Firestore ID
+ * Save Checked-out bikeId in user's document
  * */
+const checkOutBikeToUser = async (bikeId: string): Promise<void> => {
+  const currentUser = ourAuth.auth.currentUser;
+  if (currentUser) {
+    const userDoc = await getDocumentById('users', currentUser.uid);
+    await ourFirestore.updateDoc(userDoc.ref, { checkedOutBikeId: bikeId });
+  }
+};
+
+/**
+ * Checks if a user has had a bike out for > 24 hours.
+ * @param timeOut Time user checks out bike
+ */
+function checkIfOverdue(timeOut: string): boolean {
+  const timeOUtDate = new Date(timeOut);
+  const currentDate = new Date();
+  const timeDifference = Math.abs(timeOUtDate - currentDate);
+  const diffDays = timeDifference / (1000 * 60 * 60 * 24);
+
+  if (diffDays > 1) {
+    return true;
+  } else {
+    return false;
+  }
+}
 /*
-export const checkoutBike = async (bikeId: number) => {
-    // check out the bike
-}*/
+ * Set the bike as checked out in the Bikes collection, and for the current user
+ * */
+export const checkInBike = async (bikeId: string): Promise<void> => {
+  const bikeDoc = await getDocumentById('bikes', bikeId);
+  const bike = bikeDoc.data();
+  const isUserBanned = checkIfOverdue(bike.checkedOutTime);
+  await ourFirestore.updateDoc(bikeDoc.ref, {
+    checkedOut: false,
+    checkedOutTime: ''
+  });
+  await checkInBikeFromUser(isUserBanned);
+};
+
+/**
+ * Save Checked-out bikeId in user's document
+ * */
+const checkInBikeFromUser = async (accountStatus: boolean): Promise<void> => {
+  const currentUser = ourAuth.auth.currentUser;
+  if (currentUser) {
+    const userDoc = await getDocumentById('users', currentUser.uid);
+    await ourFirestore.updateDoc(userDoc.ref, {
+      checkedOutBikeId: '',
+      banned: accountStatus
+    });
+  }
+};
+
+/**
+ * Determine if user has checked out a bike
+ * */
+export const doesUserHaveABikeCheckedOut = async (): Promise<boolean> => {
+  const currentUser = ourAuth.auth.currentUser;
+  if (currentUser) {
+    const theUserDocument = await getDocumentById('users', currentUser.uid);
+    const user = theUserDocument.data() as User;
+    return user.checkedOutBikeId.length > 0;
+  }
+  return false;
+};
+
+/**
+ * Get the user's checked-out bike ID
+ * */
+export const getCheckedOutBikeId = async (): Promise<string> => {
+  const currentUser = ourAuth.auth.currentUser;
+  if (currentUser) {
+    const theUserDocument = await getDocumentById('users', currentUser.uid);
+    const user = theUserDocument.data() as User;
+    return user.checkedOutBikeId;
+  }
+
+  throw false;
+};

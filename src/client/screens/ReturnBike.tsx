@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View, Button } from 'react-native';
 import { ReturnBikeScreenProps, User } from '../types/types';
-import { getUserFromFirestore } from '../firebase/firestore';
+import { getUserFromFirestore, checkInBike } from '../firebase/firestore';
 import { ourAuth } from '../../server';
-
-function NoBikeCheckedOut() {
-  return <Text>No Bikes to Return</Text>;
-}
 
 // Things do
 const ReturnBikeScreen: React.FC<ReturnBikeScreenProps> = () => {
@@ -16,12 +12,11 @@ const ReturnBikeScreen: React.FC<ReturnBikeScreenProps> = () => {
     const currentUser = async () => {
       setUser(await getUserFromFirestore(ourAuth.auth.currentUser?.uid));
     };
-
     currentUser();
   }, []);
 
   console.log(user);
-  if (user?.currentBike == '') {
+  if (user?.checkedOutBikeId == '') {
     return (
       <View>
         <NoBikeCheckedOut></NoBikeCheckedOut>
@@ -31,10 +26,25 @@ const ReturnBikeScreen: React.FC<ReturnBikeScreenProps> = () => {
     return (
       <Button
         title="Return Bike"
-        onPress={() => console.log(user?.currentBike)}
+        onPress={() => UpdateBikeAndUser(user)}
       ></Button>
     );
   }
 };
 
+/**
+//  * Checks if user has had bike for longer than 24 hours
+//  */
+// function checkIfBanned(){
+//   console.log(b)
+// }
+
+function NoBikeCheckedOut() {
+  return <Text>No Bikes to Return</Text>;
+}
+
+async function UpdateBikeAndUser(user: User) {
+  await checkInBike(user.checkedOutBikeId);
+  alert('Bike Returned');
+}
 export default ReturnBikeScreen;

@@ -1,4 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { BikeType, Location } from '../components/types';
 
 export type RootStackParamList = {
   LoginScreen: undefined;
@@ -6,36 +7,40 @@ export type RootStackParamList = {
   WaiverScreen: undefined;
   HomeScreen: undefined;
   AddBikeScreen: undefined;
-  BikeDetailScreen: { bike: Bike; review: Review[] };
+  BikeDetailScreen: {
+    model: string;
+    photo: string;
+    comments: string;
+    issues: string;
+    location: Location;
+    id: string;
+    bike: BikeType;
+  };
   ViewBikeScreen: undefined;
   ReviewBikeScreen: Review;
   ReturnBikeScreen: { user: User };
+  ProfileScreen: undefined;
 };
 
 export enum Screens {
-  HomeScreen = 'HomeScreen',
   LoginScreen = 'LoginScreen',
   RegisterScreen = 'RegisterScreen',
   WaiverScreen = 'WaiverScreen',
-  AddBikeScreen = 'AddBikeScreen',
-  BikeDetailScreen = 'BikeDetailScreen',
   ViewBikeScreen = 'ViewBikeScreen',
+  ReturnBikeScreen = 'ReturnBikeScreen',
+  BikeDetailScreen = 'BikeDetailScreen',
+  AddBikeScreen = 'AddBikeScreen',
   ReviewBikeScreen = 'ReviewBikeScreen',
-  ReturnBikeScreen = 'ReturnBikeScreen'
+  ProfileScreen = 'ProfileScreen'
 }
 
 export enum Tabs {
-  HomeTab = 'HomeTab',
+  HomeTab = 'ViewBikesTab',
   AddBikeTab = 'AddBikeTab',
   ReviewBikeTab = 'ReviewBikeTab',
   ReturnBikeTab = 'ReturnBikeTab',
   ProfileTab = 'ProfileTab'
 }
-
-export type HomeScreenProps = NativeStackScreenProps<
-  RootStackParamList,
-  Screens.HomeScreen
->;
 
 export type LoginScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -81,8 +86,17 @@ export type Subscription = {
   remove: () => void;
 };
 
+export type ProfileScreenProps = NativeStackScreenProps<
+  RootStackParamList,
+  Screens.ProfileScreen
+>;
+
 export type Navigation = {
   navigate: (screen: string) => void;
+};
+
+export type DetailNavigation = {
+  navigate: (screen: string, bike: BikeType) => void;
 };
 
 export type User = {
@@ -93,6 +107,7 @@ export type User = {
   signedWaiver: boolean;
   bikesOwned: Bike[];
   currentBike: string;
+  checkedOutBikeId: string;
   banned: boolean;
 };
 
@@ -108,6 +123,7 @@ export type Bike = {
   currentlyCheckedOut: boolean;
   lockCombination: number;
   stolen: boolean;
+  checkedOutTime: string;
 };
 
 export type Review = {

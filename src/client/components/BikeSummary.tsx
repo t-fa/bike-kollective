@@ -1,42 +1,56 @@
 import React, { useEffect, useState } from 'react';
-import { BikeType, Coords } from './types';
+import { BikeType } from './types';
 import { Card, Text, Divider } from 'react-native-paper';
 import { getBikeImageUrl } from '../firebase/storage';
+import { DetailNavigation, Screens } from '../types/types';
+import { TouchableOpacity } from 'react-native';
+import styles from '../styles/StyleSheet';
 
-type Props = Pick<BikeType, 'model'> &
-  Pick<Coords, 'latitude' | 'longitude'> & {
-    photo: string;
-    distance: number;
-    loading: boolean;
-  };
+type Props = {
+  bike: BikeType;
+  navigation: DetailNavigation;
+  distance: number | undefined;
+  loading: boolean;
+};
 
 const BikeSummary: React.FC<Props> = ({
-  model,
   distance,
-  latitude,
-  longitude,
   loading,
-  photo
+  bike,
+  navigation
 }) => {
   const [imageUrl, setImageUrl] = useState<string>('');
 
+  const goToBikeDetailScreen = (bike: BikeType) => {
+    navigation.navigate(Screens.BikeDetailScreen, bike);
+  };
+
   useEffect(() => {
     const getUrl = async () => {
-      setImageUrl(await getBikeImageUrl(photo));
+      setImageUrl(await getBikeImageUrl(bike.photo));
     };
 
     getUrl();
   }, [loading]);
 
   return distance ? (
-    <Card>
+    <Card style={styles.viewBikesCard}>
       <Card.Cover source={{ uri: imageUrl }} />
-      <Card.Title title={model} />
+      <Card.Title title={bike.model} />
       <Card.Content>
-        <Text>Latitude: {latitude}</Text>
-        <Text>Longitude: {longitude}</Text>
+        <Text>Latitude: {bike.location.coords.latitude}</Text>
+        <Text>Longitude: {bike.location.coords.longitude}</Text>
         <Divider />
-        <Text>{parseInt(distance)} miles away</Text>
+        <Text>{distance} miles away</Text>
+        <Text style={styles.smallEmptySpace} />
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            goToBikeDetailScreen(bike);
+          }}
+        >
+          <Text style={styles.buttonText}>Take a closer look</Text>
+        </TouchableOpacity>
       </Card.Content>
     </Card>
   ) : (

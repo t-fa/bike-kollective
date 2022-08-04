@@ -9,8 +9,7 @@ import * as Notifications from 'expo-notifications';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import WaiverScreen from '../screens/WaiverScreen';
-import HomeScreen from '../screens/HomeScreen';
-import AddBikeScreen from '../screens/AddBike';
+import AddBikeScreen from '../screens/addBike';
 import ViewBikeScreen from '../screens/ViewBikeScreen';
 import ReviewBikeScreen from '../screens/ReviewBike';
 import BikeDetailScreen from '../screens/BikeDetailScreen';
@@ -51,38 +50,21 @@ export const AuthScreens = () => {
   );
 };
 
-// TODO: Figure out what exactly should go into each stack and tab here onward
-
-const MainStack = createNativeStackNavigator();
-export const MainScreens = () => {
+const ViewBikeStack = createNativeStackNavigator();
+export const ViewBikeScreens = () => {
   return (
-    <MainStack.Navigator>
-      <MainStack.Screen
-        name={Screens.HomeScreen}
-        component={HomeScreen}
-        options={{ headerShown: false }}
-      />
-      {/*<MainStack.Screen
-        name={Screens.AddBikeScreen}
-        component={AddBikeScreen}
-        options={{ title: 'Add Bike To System' }}
-      />*/}
-      <MainStack.Screen
+    <ViewBikeStack.Navigator>
+      <ViewBikeStack.Screen
         name={Screens.ViewBikeScreen}
         component={ViewBikeScreen}
         options={{ headerShown: false }}
       />
-      {/*<MainStack.Screen
-        name={Screens.ReviewBikeScreen}
-        component={ReviewBikeScreen}
-        options={{ title: 'Review a bike' }}
-      />*/}
-      <MainStack.Screen
+      <ViewBikeStack.Screen
         name={Screens.BikeDetailScreen}
         component={BikeDetailScreen}
         options={{ headerShown: false }}
       />
-    </MainStack.Navigator>
+    </ViewBikeStack.Navigator>
   );
 };
 
@@ -190,7 +172,7 @@ export const TopTabs = () => {
     >
       <Tab.Screen
         name={Tabs.HomeTab}
-        component={ViewBikeScreen}
+        component={ViewBikeScreens}
         options={{
           title: 'Bikes Near You',
           tabBarIcon: () => <Ionicons name={'bicycle'} size={30} />
@@ -239,7 +221,6 @@ export const Router = () => {
     <NavigationContainer>
       {/* Once user signs in (or is already signed in),
           then navigate to Main part of app */}
-      {/*{isSignedIn ? <MainScreens /> : <AuthScreens />}*/}
       {isSignedIn ? <TopTabs /> : <AuthScreens />}
       <View
         style={{ display: 'flex', alignItems: 'center', paddingBottom: '1%' }}

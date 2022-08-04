@@ -1,25 +1,45 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, Button, Image, FlatList } from 'react-native';
-import { BikeDetailScreenProps, Issue } from '../types/types';
+import {
+  Text,
+  View,
+  Image,
+  FlatList,
+  TouchableOpacity,
+  ScrollView
+} from 'react-native';
+import { BikeDetailScreenProps, Issue, Review } from '../types/types';
 import { getBikeImageUrl } from '../firebase/storage';
 import styles from '../styles/StyleSheet';
+import { useNavigation } from '@react-navigation/native';
+import { checkOutBike, getReviewsFromFirestore } from '../firebase/firestore';
 
-const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({
-  /*navigation,*/ route
-}) => {
+const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({ route }) => {
   const [imageUrl, setImageUrl] = useState<string>('');
-  const bike = route.params.bike;
-  const reviews = route.params.review;
   const [rating, setRating] = useState<number>(0);
   const [issues, setIssues] = useState<Issue[]>([]);
+
+  const navigation = useNavigation();
+  const bike = route.params;
 
   useEffect(() => {
     const getUrl = async () => {
       setImageUrl(await getBikeImageUrl(bike.photo));
     };
 
-    // Calculates ratng and adds items to issues list
-    const calculateRating = () => {
+    // Gets all reviews for bike. Returns a list of bikes
+    const getReviews = async () => {
+      const r = await getReviewsFromFirestore(bike.id);
+      const reviewsList: Review[] = [];
+      await r.forEach((doc) => {
+        const currentReview = doc.data();
+        currentReview['reviewId'] = doc.id;
+        reviewsList.push(currentReview as Review);
+      });
+      return reviewsList;
+    };
+
+    // Calculates rating and sets list of issues to disaplay
+    const calculateRatingandSetIssues = (reviews: Review[]) => {
       let totalRating = 0;
       const issuesList: Issue[] = [];
       reviews.map(
@@ -35,9 +55,9 @@ const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({
         ) => {
           totalRating += parseFloat(review.rating);
           issuesList.push({
-            user: review.reviewer + '_' + index.toString(),
+            user: review.reviewer + '.' + index.toString(),
             comments: review.comments,
-            bikeId: review.id + '_' + index.toString(),
+            bikeId: review.id + '.' + index.toString(),
             issueId: review.reviewId
           });
         }
@@ -46,16 +66,23 @@ const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({
       setIssues(issuesList);
     };
 
+    // Gets list of Reviews and updates data for ui
+    const setReviewsList = async () => {
+      const listOfReviews = await getReviews();
+      calculateRatingandSetIssues(listOfReviews);
+    };
     getUrl();
-    calculateRating();
+
+    setReviewsList();
+    // calculateRating();
   }, []);
 
-  // TODO: add back button, or some other way to leave
-
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.smallEmptySpace} />
       <Text>Model: {bike.model}</Text>
-      <Text>Current Location: {bike.currentLocation}</Text>
+      <Text>Longitude: {bike.location.coords.longitude}</Text>
+      <Text>Latitude: {bike.location.coords.latitude}</Text>
       <Text>Average Rating: {rating} star(s)</Text>
       <Text>Comments: {bike.comments}</Text>
       <Text>Reviews And Issues Reported By Other Riders:</Text>
@@ -70,10 +97,6 @@ const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({
               <Text style={styles.flatListItem}>
                 Comments/Issues: {item.comments}
               </Text>
-              <Button
-                title="Update"
-                onPress={() => console.log(item.issueId)}
-              ></Button>
             </>
           </View>
         )}
@@ -82,12 +105,33 @@ const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({
         style={{ width: 200, height: 200 }}
         source={{ uri: imageUrl }}
       ></Image>
-      <Button
-        title="Check out"
-        /*onPress={() => checkoutBike(bikeId)}*/
-      ></Button>
-      <Text>Bike out of date? Update</Text>
-    </View>
+
+      <View style={styles.smallEmptySpace} />
+      <TouchableOpacity
+        style={[styles.bikeDetailButtonOutlined]}
+        onPress={() => {
+          checkOutBike(bike.id, new Date().toLocaleString());
+        }}
+      >
+        <Text style={styles.buttonOutlineText}>Check out</Text>
+      </TouchableOpacity>
+
+      <View style={styles.smallEmptySpace} />
+      <Text>
+        Bike out of date? <Text style={styles.link}>Update</Text>
+      </Text>
+      <View style={styles.smallEmptySpace} />
+
+      <TouchableOpacity
+        style={styles.bikeDetailButton}
+        onPress={() => {
+          navigation.goBack();
+        }}
+      >
+        <Text style={styles.buttonText}>Go back</Text>
+      </TouchableOpacity>
+      <View style={styles.smallEmptySpace} />
+    </ScrollView>
   );
 };
 

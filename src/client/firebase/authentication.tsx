@@ -2,7 +2,8 @@ import { ourAuth } from '../../server';
 import { Navigation, Screens } from '../types/types';
 import {
   createDocumentFromAuthenticatedUser,
-  documentExists
+  documentExists,
+  getUserFromFirestore
 } from './firestore';
 import { Dispatch, SetStateAction } from 'react';
 
@@ -66,6 +67,14 @@ export const emailPasswordCreateUser = async (
 };
 
 /**
+ * Checks if a user is banned
+ * @returns Boolean
+ */
+const isUserBanned = async () => {
+  const user = await getUserFromFirestore(ourAuth.auth.currentUser?.uid);
+  return user.banned;
+};
+/**
  * Sign in using email and password
  * */
 export const emailPasswordSignIn = async (
@@ -77,9 +86,13 @@ export const emailPasswordSignIn = async (
 
   try {
     await ourAuth.signInWithEmailAndPassword(ourAuth.auth, email, password);
-    if (ourAuth.auth.currentUser != null) {
+    const userBanned = await isUserBanned();
+    if (ourAuth.auth.currentUser != null && userBanned == false) {
       // go to HomeScreen
+      console.log('tehses ', userBanned);
       setIsSignedIn(true);
+    } else {
+      alert('This account is banned from The Bike Kollective.');
     }
   } catch (error) {
     alert(error.code);
