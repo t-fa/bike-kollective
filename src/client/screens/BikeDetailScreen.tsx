@@ -12,7 +12,12 @@ import { BikeDetailScreenProps, Issue, Review } from '../types/types';
 import { getBikeImageUrl } from '../firebase/storage';
 import styles from '../styles/StyleSheet';
 import { useNavigation } from '@react-navigation/native';
-import { checkOutBike, getReviewsFromFirestore } from '../firebase/firestore';
+import {
+  checkOutBike,
+  getReviewsFromFirestore,
+  setStolenStatus,
+  userHasABikeCheckedOut
+} from '../firebase/firestore';
 
 const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({ route }) => {
   const [imageUrl, setImageUrl] = useState<string>('');
@@ -59,6 +64,24 @@ const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({ route }) => {
     calculateRating();
   }, []);
 
+  const reportAsStolen = async (bikeId: string) => {
+    await setStolenStatus(bikeId, true);
+    alert('Sorry about that! Please choose another');
+    navigation.goBack();
+  };
+
+  const onCheckOutClick = async (bikeId: string) => {
+    if (await userHasABikeCheckedOut()) {
+      alert('You already have a bike checked out.');
+      return;
+    }
+
+    const lockCombo = await checkOutBike(bikeId);
+    alert(`Bike checked out! Lock combination: ${lockCombo}. 
+    The combination is also in the Profile section.`);
+    navigation.goBack();
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.smallEmptySpace} />
@@ -96,18 +119,22 @@ const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({ route }) => {
       <TouchableOpacity
         style={[styles.bikeDetailButtonOutlined]}
         onPress={() => {
-          checkOutBike(bike.id);
+          onCheckOutClick(bike.id);
         }}
       >
         <Text style={styles.buttonOutlineText}>Check out</Text>
       </TouchableOpacity>
 
       <View style={styles.smallEmptySpace} />
-      <Text>
-        Bike out of date? <Text style={styles.link}>Update</Text>
-      </Text>
-      <View style={styles.smallEmptySpace} />
 
+      <View style={styles.row}>
+        <Text>{'Bike not there? '}</Text>
+        <TouchableOpacity onPress={() => reportAsStolen}>
+          <Text style={styles.link}>Report as stolen</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.smallEmptySpace} />
       <TouchableOpacity
         style={styles.bikeDetailButton}
         onPress={() => {

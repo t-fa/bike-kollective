@@ -95,7 +95,7 @@ export const TopTabs = () => {
       })}
     >
       <Tab.Screen
-        name={Tabs.HomeTab}
+        name={Tabs.ViewBikesTab}
         component={ViewBikeScreens}
         options={{
           title: 'Bikes Near You',
