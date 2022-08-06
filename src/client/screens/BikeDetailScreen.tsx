@@ -133,7 +133,6 @@ const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({ route }) => {
             style={[styles.bikeDetailButtonOutlined]}
             onPress={() => {
               const Datetime = new Date().toLocaleString();
-              checkOutBike(bike.id, Datetime);
               onCheckOutClick(bike.id, Datetime);
             }}
           >

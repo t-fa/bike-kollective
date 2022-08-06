@@ -36,7 +36,8 @@ export const lastBikeReturnReminder = async () => {
       await Notifications.scheduleNotificationAsync({
         content: {
           title: 'Bike Return Reminder',
-          body: `Your bike is overdue. You have to return it now.`
+          body: `Your bike is overdue. You have to return it now.`,
+          sound: 'default'
         },
         trigger: {
           seconds: 86400

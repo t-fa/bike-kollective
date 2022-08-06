@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from './AuthContext';
-import { Screens, Tabs, Subscription } from '../types/types';
-import * as Notifications from 'expo-notifications';
+import { Screens, Tabs } from '../types/types';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import WaiverScreen from '../screens/WaiverScreen';
@@ -90,26 +89,8 @@ export const ReviewBikeScreenStack = () => {
   );
 };
 
-// const ReturnBikeStack = createNativeStackNavigator();
-// export const ReturnBikeScreenStack = () => {
-//   return (
-//     <ReturnBikeStack.Navigator>
-//       <ReturnBikeStack.Screen
-//         name={Screens.ReturnBikeScreen}
-//         component={ReturnBikeScreen}
-//         options={{ headerShown: false }}
-//       />
-//     </ReturnBikeStack.Navigator>
-//   );
-// };
-
 const Tab = createMaterialTopTabNavigator();
 export const TopTabs = () => {
-  const notificationListener = useRef<Subscription>();
-  const responseListener = useRef<Subscription>();
-  const [notification, setNotification] =
-    useState<Notifications.Notification>();
-
   useEffect(() => {
     // Get user
     const checkUser = async () => {
@@ -128,26 +109,6 @@ export const TopTabs = () => {
         console.log('User has token');
       }
     });
-
-    // This listener is fired whenever a notification is received while the app is foregrounded
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
-
-    // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
-
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-      console.log(notification);
-    };
   }, []);
 
   return (
