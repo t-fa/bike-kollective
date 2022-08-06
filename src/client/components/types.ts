@@ -9,6 +9,8 @@ export type BikeType = {
   photo: string;
   user: string;
   checkedOut: boolean;
+  checkedOutTime: string;
+  stolen: boolean;
 };
 
 export type Location = {

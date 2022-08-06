@@ -18,7 +18,6 @@ export type RootStackParamList = {
   };
   ViewBikeScreen: undefined;
   ReviewBikeScreen: Review;
-  ReturnBikeScreen: { user: User };
   ProfileScreen: undefined;
 };
 
@@ -27,7 +26,6 @@ export enum Screens {
   RegisterScreen = 'RegisterScreen',
   WaiverScreen = 'WaiverScreen',
   ViewBikeScreen = 'ViewBikeScreen',
-  ReturnBikeScreen = 'ReturnBikeScreen',
   BikeDetailScreen = 'BikeDetailScreen',
   AddBikeScreen = 'AddBikeScreen',
   ReviewBikeScreen = 'ReviewBikeScreen',
@@ -35,10 +33,9 @@ export enum Screens {
 }
 
 export enum Tabs {
-  HomeTab = 'ViewBikesTab',
+  ViewBikesTab = 'ViewBikesTab',
   AddBikeTab = 'AddBikeTab',
   ReviewBikeTab = 'ReviewBikeTab',
-  ReturnBikeTab = 'ReturnBikeTab',
   ProfileTab = 'ProfileTab'
 }
 
@@ -77,10 +74,10 @@ export type ReviewBikeScreenProps = NativeStackScreenProps<
   Screens.ReviewBikeScreen
 >;
 
-export type ReturnBikeScreenProps = NativeStackScreenProps<
-  RootStackParamList,
-  Screens.ReturnBikeScreen
->;
+// export type ReturnBikeScreenProps = NativeStackScreenProps<
+//   RootStackParamList,
+//   Screens.ReturnBikeScreen
+// >;
 
 export type Subscription = {
   remove: () => void;
@@ -100,17 +97,18 @@ export type DetailNavigation = {
 };
 
 export type User = {
+  userId: string;
   name: string;
   email: string;
   id: string;
   pushToken: string;
   signedWaiver: boolean;
   bikesOwned: Bike[];
-  currentBike: string;
   checkedOutBikeId: string;
   banned: boolean;
+  firstReturnReminderId: string;
+  secondReturnReminderId: string;
 };
-
 export type Bike = {
   id: string;
   owner: User | undefined;
@@ -123,7 +121,6 @@ export type Bike = {
   currentlyCheckedOut: boolean;
   lockCombination: number;
   stolen: boolean;
-  checkedOutTime: string;
 };
 
 export type Review = {

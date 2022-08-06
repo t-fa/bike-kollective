@@ -1,40 +1,87 @@
-import React from 'react';
-import { ProfileScreenProps } from '../types/types';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { ProfileScreenProps, User } from '../types/types';
 import styles from '../styles/StyleSheet';
-import {
-  KeyboardAvoidingView,
-  Text,
-  TouchableOpacity,
-  View,
-  Image
-} from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { Card, Divider } from 'react-native-paper';
 import { useAuth } from '../components/AuthContext';
+import { BikeType } from '../components/types';
+import OutlineButton from '../components/OutlineButton';
 import { userSignOut } from '../firebase/authentication';
+import {
+  parkBikeProcess,
+  observeUserCheckOutBike
+} from '../firebase/firestore';
 
 const ProfileScreen: React.FC<ProfileScreenProps> = (/*{ navigation }*/) => {
   const { setIsSignedIn } = useAuth();
+  const [user, setUser] = useState<User>({} as User);
+  const [userHasCheckedOutBike, setUserHasCheckedOutBike] =
+    useState<boolean>(false);
+  const [checkedOutBike, setCheckedOutBike] = useState<BikeType>(
+    {} as BikeType
+  );
+  const [bikeUri, setBikeUri] = useState<string>('');
 
-  return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <Image style={{}} source={{}}></Image>
+  // update the UI if the user checks out a bike
+  useEffect(() => {
+    const getUser = async () => {
+      await observeUserCheckOutBike(
+        setUser,
+        setUserHasCheckedOutBike,
+        setCheckedOutBike,
+        setBikeUri
+      );
+    };
+    getUser();
+  }, []);
 
-      <View>
-        <Text>Name</Text>
-        <Text>Email</Text>
-        <Text>Bikes owned: bikeArray | null</Text>
-        <Text>Current location: lat & long</Text>
-        <Text>Bike checked out: someBike | null</Text>
-      </View>
+  const parkBike = async (
+    user: User,
+    setIsSignedIn: Dispatch<SetStateAction<boolean>>
+  ) => {
+    await parkBikeProcess(user, setIsSignedIn);
+  };
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => userSignOut(setIsSignedIn)}
-        >
-          <Text style={styles.buttonText}>Sign out</Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+  // if signed in, show profile. User should not be able to be here without being signed in
+  return Object.keys(user).length !== 0 ? (
+    <Card style={styles.container}>
+      <Card.Title title={user.name} />
+      <Card.Content>
+        <Text>{user.email}</Text>
+      </Card.Content>
+      <Divider style={{ paddingBottom: 10, backgroundColor: '#fff' }} />
+
+      {/* Display bike here, if it's been checked out */}
+      {userHasCheckedOutBike ? (
+        <Card>
+          <Card.Cover source={{ uri: bikeUri }} />
+          <Card.Title
+            title={`Currently Checked-out Bike: ${checkedOutBike.model}`}
+          />
+          <Card.Content>
+            <Text>Lock Combination: {checkedOutBike.lockCombination}</Text>
+            <Divider style={{ paddingBottom: 10, backgroundColor: '#fff' }} />
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => parkBike(user, setIsSignedIn)}
+            >
+              <Text style={styles.buttonText}>Park Bike</Text>
+            </TouchableOpacity>
+          </Card.Content>
+        </Card>
+      ) : (
+        <View></View>
+      )}
+
+      <OutlineButton
+        onPressFunction={() => userSignOut(setIsSignedIn)}
+        buttonText={'Sign out'}
+      />
+    </Card>
+  ) : (
+    <View>
+      <Text>No Profile...</Text>
+    </View>
   );
 };
 

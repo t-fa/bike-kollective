@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Text,
-  View,
-  Image,
-  FlatList,
-  TouchableOpacity,
-  ScrollView
-} from 'react-native';
+import { Text, View, Image, FlatList, TouchableOpacity } from 'react-native';
 import { BikeDetailScreenProps, Issue, Review } from '../types/types';
 import { getBikeImageUrl } from '../firebase/storage';
 import styles from '../styles/StyleSheet';
 import { useNavigation } from '@react-navigation/native';
-import { checkOutBike, getReviewsFromFirestore } from '../firebase/firestore';
+import {
+  checkOutBike,
+  getReviewsFromFirestore,
+  setStolenStatus,
+  userHasABikeCheckedOut
+} from '../firebase/firestore';
 
 const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({ route }) => {
   const [imageUrl, setImageUrl] = useState<string>('');
@@ -77,61 +75,91 @@ const BikeDetailScreen: React.FC<BikeDetailScreenProps> = ({ route }) => {
     // calculateRating();
   }, []);
 
+  const reportAsStolen = async (bikeId: string) => {
+    await setStolenStatus(bikeId, true);
+    alert('Sorry about that! Please choose another');
+    navigation.goBack();
+  };
+
+  const onCheckOutClick = async (bikeId: string, dateAndTime: string) => {
+    if (await userHasABikeCheckedOut()) {
+      alert('You already have a bike checked out.');
+      return;
+    }
+
+    const lockCombo = await checkOutBike(bikeId, dateAndTime);
+    alert(`Bike checked out! Lock combination: ${lockCombo}. 
+    The combination is also in the Profile section.`);
+    navigation.goBack();
+  };
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.smallEmptySpace} />
-      <Text>Model: {bike.model}</Text>
-      <Text>Longitude: {bike.location.coords.longitude}</Text>
-      <Text>Latitude: {bike.location.coords.latitude}</Text>
-      <Text>Average Rating: {rating} star(s)</Text>
-      <Text>Comments: {bike.comments}</Text>
-      <Text>Reviews And Issues Reported By Other Riders:</Text>
-      <FlatList
-        data={issues}
-        renderItem={({ item }) => (
-          <View
-            style={{ borderWidth: 1, borderColor: 'black', marginBottom: 5 }}
+    <FlatList
+      contentContainerStyle={{
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#fff'
+      }}
+      ListHeaderComponent={
+        <>
+          <View style={styles.smallEmptySpace} />
+          <Text>Model: {bike.model}</Text>
+          <Text>Longitude: {bike.location.coords.longitude}</Text>
+          <Text>Latitude: {bike.location.coords.latitude}</Text>
+          <Text>Average Rating: {rating} star(s)</Text>
+          <Text>Comments: {bike.comments}</Text>
+          <Text>Reviews And Issues Reported By Other Riders:</Text>
+        </>
+      }
+      data={issues}
+      renderItem={({ item }) => (
+        <View style={{ marginBottom: 5 }}>
+          <>
+            <Text style={styles.flatListItem}> * Reviewer: {item.user}</Text>
+            <Text style={{ paddingLeft: 35 }}>
+              Comments/Issues: {item.comments}
+            </Text>
+          </>
+        </View>
+      )}
+      ListFooterComponent={
+        <>
+          <Image
+            style={{ width: 200, height: 200 }}
+            source={{ uri: imageUrl }}
+          ></Image>
+          <View style={styles.smallEmptySpace} />
+          <TouchableOpacity
+            style={[styles.bikeDetailButtonOutlined]}
+            onPress={() => {
+              const Datetime = new Date().toLocaleString();
+              checkOutBike(bike.id, Datetime);
+              onCheckOutClick(bike.id, Datetime);
+            }}
           >
-            <>
-              <Text style={styles.flatListItem}>Reviewer: {item.user}</Text>
-              <Text style={styles.flatListItem}>
-                Comments/Issues: {item.comments}
-              </Text>
-            </>
+            <Text style={styles.buttonOutlineText}>Check out</Text>
+          </TouchableOpacity>
+          <View style={styles.smallEmptySpace} />
+          <View style={styles.row}>
+            <Text>{'Bike not there? '}</Text>
+
+            <TouchableOpacity onPress={() => reportAsStolen}>
+              <Text style={styles.link}>Report as stolen</Text>
+            </TouchableOpacity>
           </View>
-        )}
-      ></FlatList>
-      <Image
-        style={{ width: 200, height: 200 }}
-        source={{ uri: imageUrl }}
-      ></Image>
-
-      <View style={styles.smallEmptySpace} />
-      <TouchableOpacity
-        style={[styles.bikeDetailButtonOutlined]}
-        onPress={() => {
-          checkOutBike(bike.id, new Date().toLocaleString());
-        }}
-      >
-        <Text style={styles.buttonOutlineText}>Check out</Text>
-      </TouchableOpacity>
-
-      <View style={styles.smallEmptySpace} />
-      <Text>
-        Bike out of date? <Text style={styles.link}>Update</Text>
-      </Text>
-      <View style={styles.smallEmptySpace} />
-
-      <TouchableOpacity
-        style={styles.bikeDetailButton}
-        onPress={() => {
-          navigation.goBack();
-        }}
-      >
-        <Text style={styles.buttonText}>Go back</Text>
-      </TouchableOpacity>
-      <View style={styles.smallEmptySpace} />
-    </ScrollView>
+          <View style={styles.smallEmptySpace} />
+          <TouchableOpacity
+            style={styles.bikeDetailButton}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Text style={styles.buttonText}>Go back</Text>
+          </TouchableOpacity>
+          <View style={styles.smallEmptySpace} />
+        </>
+      }
+    ></FlatList>
   );
 };
 

@@ -2,27 +2,6 @@ import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 
-export const sendNotifications = async (token: Notifications.ExpoPushToken) => {
-  console.log('sending');
-  const message = {
-    to: token,
-    sound: 'default',
-    title: 'Push Notfication',
-    body: 'And here is the body!',
-    data: { someData: 'goes here' }
-  };
-
-  await fetch('https://exp.host/--/api/v2/push/send', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Accept-encoding': 'gzip, deflate',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(message)
-  });
-};
-
 /**
  * Schedule notification to fire 8 hours in the future
  * Returns string notficiation id
@@ -37,12 +16,13 @@ export const firstBikeReturnReminder = async () => {
           sound: 'default'
         },
         trigger: {
-          seconds: 60
+          seconds: 28800
         }
       });
     return scheduledNotification;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
+    return '';
   }
 };
 
@@ -55,16 +35,17 @@ export const lastBikeReturnReminder = async () => {
     const scheduledNotification: string =
       await Notifications.scheduleNotificationAsync({
         content: {
-          title: 'Return Bike Reminder',
+          title: 'Bike Return Reminder',
           body: `Your bike is overdue. You have to return it now.`
         },
         trigger: {
-          seconds: 60
+          seconds: 86400
         }
       });
     return scheduledNotification;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
+    return '';
   }
 };
 
@@ -75,6 +56,7 @@ export const lastBikeReturnReminder = async () => {
 export const cancelBikeReturnReminder = async (notificationId: string) => {
   try {
     await Notifications.cancelScheduledNotificationAsync(notificationId);
+    return 'Return Notification canceled';
   } catch (error) {
     console.log(error);
   }
@@ -99,7 +81,6 @@ export const registerForPushNotificationsAsync = async () => {
       return;
     }
     const token: string = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token);
 
     if (Platform.OS === 'android') {
       Notifications.setNotificationChannelAsync('default', {

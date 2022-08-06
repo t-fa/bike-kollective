@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   flatListItem: {
     marginTop: 1,
     paddingTop: 1,
-    paddingHorizontal: 5
+    paddingLeft: 22
   },
   viewBikesCard: {
     backgroundColor: 'whitesmoke'

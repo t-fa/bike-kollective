@@ -21,11 +21,7 @@ import {
   getUserFromFirestore
 } from '../firebase/firestore';
 import { ourAuth } from '../../server';
-import {
-  firstBikeReturnReminder,
-  registerForPushNotificationsAsync
-} from '../helpers/Notfications';
-import ReturnBikeScreen from '../screens/ReturnBike';
+import { registerForPushNotificationsAsync } from '../helpers/Notfications';
 const AuthStack = createNativeStackNavigator();
 
 export const AuthScreens = () => {
@@ -94,18 +90,18 @@ export const ReviewBikeScreenStack = () => {
   );
 };
 
-const ReturnBikeStack = createNativeStackNavigator();
-export const ReturnBikeScreenStack = () => {
-  return (
-    <ReturnBikeStack.Navigator>
-      <ReturnBikeStack.Screen
-        name={Screens.ReturnBikeScreen}
-        component={ReturnBikeScreen}
-        options={{ headerShown: false }}
-      />
-    </ReturnBikeStack.Navigator>
-  );
-};
+// const ReturnBikeStack = createNativeStackNavigator();
+// export const ReturnBikeScreenStack = () => {
+//   return (
+//     <ReturnBikeStack.Navigator>
+//       <ReturnBikeStack.Screen
+//         name={Screens.ReturnBikeScreen}
+//         component={ReturnBikeScreen}
+//         options={{ headerShown: false }}
+//       />
+//     </ReturnBikeStack.Navigator>
+//   );
+// };
 
 const Tab = createMaterialTopTabNavigator();
 export const TopTabs = () => {
@@ -145,19 +141,12 @@ export const TopTabs = () => {
         console.log(response);
       });
 
-    const random = async () => {
-      await firstBikeReturnReminder().then((res) => {
-        console.log(res);
-      });
-    };
-    random();
-    console.log(notification);
-
     return () => {
       Notifications.removeNotificationSubscription(
         notificationListener.current
       );
       Notifications.removeNotificationSubscription(responseListener.current);
+      console.log(notification);
     };
   }, []);
 
@@ -171,7 +160,7 @@ export const TopTabs = () => {
       })}
     >
       <Tab.Screen
-        name={Tabs.HomeTab}
+        name={Tabs.ViewBikesTab}
         component={ViewBikeScreens}
         options={{
           title: 'Bikes Near You',
@@ -194,14 +183,14 @@ export const TopTabs = () => {
           tabBarIcon: () => <Ionicons name={'ios-star-half-sharp'} size={30} />
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name={Tabs.ReturnBikeTab}
         component={ReturnBikeScreenStack}
         options={{
           title: 'Return Bike',
           tabBarIcon: () => <Ionicons name={'remove-circle'} size={30} />
         }}
-      />
+      /> */}
       <Tab.Screen
         name={Tabs.ProfileTab}
         component={ProfileScreen}
