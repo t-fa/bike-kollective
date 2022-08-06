@@ -48,23 +48,29 @@ const ViewBikeScreen: React.FC<ViewBikeScreenProps> = ({ navigation }) => {
       querySnapshot.forEach((doc) => {
         const bike = { ...doc.data() };
         bike.id = doc.id;
-        bike.distance = haversineDistance(
+        bike.distance = parseInt(
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          [location?.coords.latitude, location?.coords.longitude],
-          [bike.location.coords.latitude, bike.location.coords.longitude],
-          true
+          haversineDistance(
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            [location?.coords.latitude, location?.coords.longitude],
+            [bike.location.coords.latitude, bike.location.coords.longitude],
+            true
+          )
         );
         bikesArr.push(bike as BikeType);
       });
 
       bikesArr.sort(compare);
 
-      setBikes(bikesArr);
+      const filteredBikes = bikesArr.filter((bike) => bike.checkedOut !== true);
+
+      setBikes(filteredBikes);
     };
 
     getBikes();
-  }, []);
+  }, [location]);
 
   return loading ? (
     <View style={styles.container}>
@@ -76,21 +82,18 @@ const ViewBikeScreen: React.FC<ViewBikeScreenProps> = ({ navigation }) => {
       <FlatList
         data={bikes}
         renderItem={({ item }) => {
-          if (!item.checkedOut) {
-            return (
-              <Card key={item.id}>
-                <Card.Content>
-                  <BikeSummary
-                    distance={item.distance}
-                    loading={loading}
-                    bike={item}
-                    navigation={navigation}
-                  />
-                </Card.Content>
-              </Card>
-            );
-          }
-          return <View />;
+          return (
+            <Card key={item.id}>
+              <Card.Content>
+                <BikeSummary
+                  distance={item.distance}
+                  loading={loading}
+                  bike={item}
+                  navigation={navigation}
+                />
+              </Card.Content>
+            </Card>
+          );
         }}
       ></FlatList>
     </View>
