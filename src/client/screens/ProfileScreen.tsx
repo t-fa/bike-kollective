@@ -23,17 +23,17 @@ const ProfileScreen: React.FC<ProfileScreenProps> = (/*{ navigation }*/) => {
   const [bikeUri, setBikeUri] = useState<string>('');
 
   // update the UI if the user checks out a bike
-  useEffect(() => {
-    const getUser = async () => {
-      await observeUserCheckOutBike(
-        setUser,
-        setUserHasCheckedOutBike,
-        setCheckedOutBike,
-        setBikeUri
-      );
-    };
-    getUser();
-  }, []);
+  // useEffect(() => {
+  //   const getUser = async () => {
+  //     await observeUserCheckOutBike(
+  //       setUser,
+  //       setUserHasCheckedOutBike,
+  //       setCheckedOutBike,
+  //       setBikeUri
+  //     );
+  //   };
+  //   getUser();
+  // }, []);
 
   const parkBike = async (user: User) => {
     await parkBikeProcess(user);
