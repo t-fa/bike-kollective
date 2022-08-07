@@ -5,10 +5,17 @@ import {
   User as FirebaseUser
 } from '../../server';
 import { User } from '../types/types';
+import { ExpoPushToken } from 'expo-notifications';
 import { BikeType } from '../components/types';
 import { where } from 'firebase/firestore';
 import { getBikeImageUrl } from './storage';
 import { Dispatch, SetStateAction } from 'react';
+import { userSignOut } from './authentication';
+import {
+  firstBikeReturnReminder,
+  lastBikeReturnReminder,
+  cancelBikeReturnReminder
+} from '../helpers/Notfications';
 
 enum Collections {
   users = 'users',
@@ -110,11 +117,39 @@ export const getReviewsFromFirestore = async (
 };
 
 /**
+ * Adds push notification to user document
+ */
+export const addPushTokenToUser = async (
+  userId: string,
+  token: ExpoPushToken
+) => {
+  const userDoc = ourFirestore.doc(ourFirestore.db, 'users', userId);
+
+  await ourFirestore.setDoc(
+    userDoc,
+    {
+      pushToken: token
+    },
+    { merge: true }
+  );
+};
+
+/*const getBikeCollection = async () => {
+    return await ourFirestore.getDocs(
+        ourFirestore.collection(ourFirestore.db, 'bikes'));
+}*/
+/*
  * Set the bike as checked out in the Bikes collection, and for the current user
  * */
-export const checkOutBike = async (bikeId: string): Promise<string> => {
+export const checkOutBike = async (
+  bikeId: string,
+  time: string
+): Promise<string> => {
   const bikeDoc = await getDocumentById(Collections.bikes, bikeId);
-  await ourFirestore.updateDoc(bikeDoc.ref, { checkedOut: true });
+  await ourFirestore.updateDoc(bikeDoc.ref, {
+    checkedOut: true,
+    checkedOutTime: time
+  });
   await checkOutBikeToUser(bikeId);
   const theBike = bikeDoc.data() as BikeType;
   return theBike.lockCombination;
@@ -125,9 +160,43 @@ export const checkOutBike = async (bikeId: string): Promise<string> => {
  * */
 const checkOutBikeToUser = async (bikeId: string): Promise<void> => {
   const currentUser = ourAuth.auth.currentUser;
+  const pushID8 = await firstBikeReturnReminder();
+  const pushID24 = await lastBikeReturnReminder();
   if (currentUser) {
     const userDoc = await getDocumentById(Collections.users, currentUser.uid);
-    await ourFirestore.updateDoc(userDoc.ref, { checkedOutBikeId: bikeId });
+    await ourFirestore.updateDoc(userDoc.ref, {
+      checkedOutBikeId: bikeId,
+      firstReturnReminderId: pushID8,
+      secondReturnReminderId: pushID24
+    });
+  }
+};
+
+/*
+ * Set the bike as checked out in the Bikes collection, and for the current user
+ * */
+export const checkInBike = async (bikeId: string): Promise<void> => {
+  const bikeDoc = await getDocumentById('bikes', bikeId);
+  const bike = bikeDoc.data();
+  const isUserBanned = checkIfOverdue(bike.checkedOutTime);
+  await ourFirestore.updateDoc(bikeDoc.ref, {
+    checkedOut: false,
+    checkedOutTime: ''
+  });
+  await checkInBikeFromUser(isUserBanned);
+};
+
+/**
+ * Save Checked-out bikeId in user's document
+ * */
+const checkInBikeFromUser = async (accountStatus: boolean): Promise<void> => {
+  const currentUser = ourAuth.auth.currentUser;
+  if (currentUser) {
+    const userDoc = await getDocumentById('users', currentUser.uid);
+    await ourFirestore.updateDoc(userDoc.ref, {
+      checkedOutBikeId: '',
+      banned: accountStatus
+    });
   }
 };
 
@@ -229,13 +298,66 @@ const getQueryFromUserId = async (userId: string) => {
   return ourFirestore.query(usersCollection, where('userId', '==', userId));
 };
 
-export const parkBikeProcess = async (user: User): Promise<void> => {
+/**
+ * Checks if a user has had a bike out for > 24 hours.
+ * @param timeOut Time user checks out bike
+ */
+function checkIfOverdue(timeOut: string): boolean {
+  const timeOutDate = new Date(timeOut);
+  const currentDate = new Date();
+  const timeDifference = Math.abs(timeOutDate - currentDate);
+  const diffDays = timeDifference / (1000 * 60 * 60 * 24);
+
+  if (diffDays > 1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/**
+ * Updates bikes checkouted status and user's current bike. Checks user is banned.
+ * @param user
+ */
+export const parkBikeProcess = async (
+  user: User,
+  setIsSignedIn: Dispatch<SetStateAction<boolean>>
+): Promise<void> => {
+  // Return Bike
   const bikeDoc = await getDocumentById(
     Collections.bikes,
     user.checkedOutBikeId
   );
-  await ourFirestore.updateDoc(bikeDoc.ref, { checkedOut: false });
+  const isUserBanned = checkIfOverdue(bikeDoc.data().checkedOutTime);
+  await ourFirestore.updateDoc(bikeDoc.ref, {
+    checkedOut: false,
+    checkedOutTime: ''
+  });
 
+  // Update user
   const userDoc = await getDocumentById(Collections.users, user.userId);
-  await ourFirestore.updateDoc(userDoc.ref, { checkedOutBikeId: '' });
+
+  // Cancel Reminder
+  const reminderOneId = userDoc.data().firstReturnReminderId;
+  const reminderTwoId = userDoc.data().secondReturnReminderId;
+  if (reminderOneId != '' || reminderTwoId != '') {
+    cancelBikeReturnReminder(reminderOneId);
+    cancelBikeReturnReminder(reminderTwoId);
+  }
+
+  await ourFirestore.updateDoc(userDoc.ref, {
+    checkedOutBikeId: '',
+    banned: isUserBanned,
+    firstReturnReminderId: '',
+    secondReturnReminderId: ''
+  });
+  alert('Bike returned! Thank you');
+
+  // User banned, sign out
+  if (isUserBanned) {
+    alert(
+      "You failed to return this bike within 24 hours.\nYou've been banned from Bike Kollective"
+    );
+    userSignOut(setIsSignedIn);
+  }
 };

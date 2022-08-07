@@ -38,7 +38,7 @@ const ReviewBikeForm: React.FC = () => {
     comments: Yup.string().max(200, 'Must be 500 characters or less'),
     rating: Yup.string()
       .required()
-      .test('is-num-1-5', 'Rating must be a number 1 - 5', (val: unknown) => {
+      .test('is-num-1-5', 'Rating must be a number 1 - 5', (val) => {
         return parseInt(val) < 6 && parseInt(val) > 0;
       })
   });

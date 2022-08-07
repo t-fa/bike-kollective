@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { NavigationContainer } from '@react-navigation/native';
@@ -15,8 +15,14 @@ import BikeDetailScreen from '../screens/BikeDetailScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import CurrentLocation from './CurrentLocation';
 import { View } from 'react-native';
-
+import {
+  addPushTokenToUser,
+  getUserFromFirestore
+} from '../firebase/firestore';
+import { ourAuth } from '../../server';
+import { registerForPushNotificationsAsync } from '../helpers/Notfications';
 const AuthStack = createNativeStackNavigator();
+
 export const AuthScreens = () => {
   return (
     <AuthStack.Navigator>
@@ -85,6 +91,26 @@ export const ReviewBikeScreenStack = () => {
 
 const Tab = createMaterialTopTabNavigator();
 export const TopTabs = () => {
+  useEffect(() => {
+    // Get user
+    const checkUser = async () => {
+      return await getUserFromFirestore(ourAuth.auth.currentUser?.uid);
+    };
+
+    // If user does not have token, request permissionss
+    checkUser().then((user) => {
+      if (user.pushToken == undefined) {
+        registerForPushNotificationsAsync()
+          .then((token) =>
+            addPushTokenToUser(ourAuth.auth.currentUser?.uid, token)
+          )
+          .catch((err) => console.error(err));
+      } else {
+        console.log('User has token');
+      }
+    });
+  }, []);
+
   return (
     <Tab.Navigator
       backBehavior="initialRoute"
@@ -118,6 +144,14 @@ export const TopTabs = () => {
           tabBarIcon: () => <Ionicons name={'ios-star-half-sharp'} size={30} />
         }}
       />
+      {/* <Tab.Screen
+        name={Tabs.ReturnBikeTab}
+        component={ReturnBikeScreenStack}
+        options={{
+          title: 'Return Bike',
+          tabBarIcon: () => <Ionicons name={'remove-circle'} size={30} />
+        }}
+      /> */}
       <Tab.Screen
         name={Tabs.ProfileTab}
         component={ProfileScreen}
@@ -139,7 +173,7 @@ export const Router = () => {
           then navigate to Main part of app */}
       {isSignedIn ? <TopTabs /> : <AuthScreens />}
       <View
-        style={{ display: 'flex', alignItems: 'center', paddingBottom: '50px' }}
+        style={{ display: 'flex', alignItems: 'center', paddingBottom: '1%' }}
       >
         <CurrentLocation />
       </View>

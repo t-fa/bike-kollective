@@ -74,6 +74,15 @@ export type ReviewBikeScreenProps = NativeStackScreenProps<
   Screens.ReviewBikeScreen
 >;
 
+// export type ReturnBikeScreenProps = NativeStackScreenProps<
+//   RootStackParamList,
+//   Screens.ReturnBikeScreen
+// >;
+
+export type Subscription = {
+  remove: () => void;
+};
+
 export type ProfileScreenProps = NativeStackScreenProps<
   RootStackParamList,
   Screens.ProfileScreen
@@ -91,13 +100,16 @@ export type User = {
   userId: string;
   name: string;
   email: string;
+  id: string;
+  pushToken: string;
   signedWaiver: boolean;
-  bikesOwned: BikeType[];
+  bikesOwned: Bike[];
   checkedOutBikeId: string;
   banned: boolean;
+  firstReturnReminderId: string;
+  secondReturnReminderId: string;
 };
-
-/*export type Bike = {
+export type Bike = {
   id: string;
   owner: User | undefined;
   model: string;
@@ -109,7 +121,7 @@ export type User = {
   currentlyCheckedOut: boolean;
   lockCombination: number;
   stolen: boolean;
-};*/
+};
 
 export type Review = {
   comments: string;

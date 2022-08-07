@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ProfileScreenProps, User } from '../types/types';
 import styles from '../styles/StyleSheet';
 import { Text, TouchableOpacity, View } from 'react-native';
@@ -35,9 +35,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = (/*{ navigation }*/) => {
     getUser();
   }, []);
 
-  const parkBike = async (user: User) => {
-    await parkBikeProcess(user);
-    alert('Bike returned! Thank you');
+  const parkBike = async (
+    user: User,
+    setIsSignedIn: Dispatch<SetStateAction<boolean>>
+  ) => {
+    await parkBikeProcess(user, setIsSignedIn);
   };
 
   // if signed in, show profile. User should not be able to be here without being signed in
@@ -61,7 +63,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = (/*{ navigation }*/) => {
             <Divider style={{ paddingBottom: 10, backgroundColor: '#fff' }} />
             <TouchableOpacity
               style={styles.button}
-              onPress={() => parkBike(user)}
+              onPress={() => parkBike(user, setIsSignedIn)}
             >
               <Text style={styles.buttonText}>Park Bike</Text>
             </TouchableOpacity>
