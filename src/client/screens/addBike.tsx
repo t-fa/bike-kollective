@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
-import AddBikeForm from '../components/AddBikeForm';
+import AddBikeForm from '../components/addBikeForm';
 import {
   StyleSheet,
   Text,
