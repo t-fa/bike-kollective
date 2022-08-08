@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     paddingTop: '3.5%'
   },
   input: {
-    backgroundColor: 'white',
+    backgroundColor: 'ghostwhite',
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 10,
