@@ -46,7 +46,6 @@ const provider = new GoogleAuthProvider();
 const db = getFirestore(firebaseApp);
 const storage = getStorage(firebaseApp);
 
-// create object, tired of messing with all these import/exports
 const ourAuth = {
   auth: auth,
   provider: provider,
@@ -69,7 +68,6 @@ const ourFirestore = {
   addDoc: addDoc,
   getDoc: getDoc,
   setDoc: setDoc,
-  updateDoc: updateDoc,
   getDocs: getDocs,
   updateDoc: updateDoc,
   onSnapShot: onSnapshot,

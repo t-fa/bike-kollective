@@ -33,7 +33,8 @@ const BikeSummary: React.FC<Props> = ({
     getUrl();
   }, [loading]);
 
-  return distance ? (
+  // allow distance of 0
+  return distance !== undefined ? (
     <Card style={styles.viewBikesCard}>
       <Card.Cover source={{ uri: imageUrl }} />
       <Card.Title title={bike.model} />
