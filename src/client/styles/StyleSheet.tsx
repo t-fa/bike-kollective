@@ -107,6 +107,23 @@ const styles = StyleSheet.create({
   },
   viewBikesCard: {
     backgroundColor: 'whitesmoke'
+  },
+  errorText: {
+    fontSize: 10,
+    color: 'red'
+  },
+  enabledButton: {},
+  disabledButton: {
+    backgroundColor: 'gray',
+    width: '100%',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center'
+  },
+  disabledButtonText: {
+    color: 'black',
+    fontWeight: '700',
+    fontSize: 16
   }
 });
 
