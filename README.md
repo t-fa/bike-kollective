@@ -3,14 +3,11 @@
 CS 467 Capstone Project
 
 # To run:
-Front end:
+
+- a version of node is required (the app was built in 16.x)
 - install required dependencies with npm install
-- start up the front end with npm start
-
-Back end:
-- cd server
-- npm install
-- start up the backend by running npm run dev
-
-Saving this somewhere in case I need it later
-https://stackoverflow.com/questions/35617547/is-it-possible-to-deploy-a-react-native-app-to-heroku
+- start up the app with your preferred runtime environment
+  - for web, run "npm run web"
+  - for ios, run "npm run ios"
+  - for android, run "npm run android"
+- web should work out of the box. android/ios environments will require the expo app and possibly an emulator.
